@@ -4,7 +4,7 @@ export default function Modules() {
         <div>
           <button>Collapse All</button>
           <button>View Progress</button>
-          <button>Publish All ▼</button>
+          <button>Publish All </button>
           <button>+ Module</button>
         </div>
   
