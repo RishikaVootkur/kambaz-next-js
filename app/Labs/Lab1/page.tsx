@@ -64,9 +64,13 @@ export default function Lab1() {
                 </ol>
                 My favourite Recipe:
                 <ol id="wd-your-favourite-recipe">
-                    <li>Take bread and roast it in butter</li>
-                    <li>Prepare an egg omlette</li>
-                    <li>Place the omlette in between the 2 breads</li>
+                    <li>Take bread and roast it in butter.</li>
+                    <li>Smash the egg in a pan.</li>
+                    <li>Add chilli powder, pepper and salt.</li>
+                    <li>Cover the pan with lid and let it cook for 5 minutes.</li>
+                    <li>Flip the omlette.</li>
+                    <li>Spread the mayo and ketchup on the bread.</li>
+                    <li>Place the omlette in between the 2 breads.</li>
                 </ol>
                 <h5>Unordered List Tag</h5>
                 My Favourite Books (In no particular Order):
@@ -111,50 +115,50 @@ export default function Lab1() {
                     <tr>
                         <td>Q3</td>
                         <td>JavaScript</td>
-                        <td>2/17/21</td>
+                        <td>2/20/21</td>
                         <td>95</td> 
                     </tr>
                     <tr>
                         <td>Q4</td>
-                        <td>CSS</td>
-                        <td>2/10/21</td>
-                        <td>90</td>
+                        <td>Frontend</td>
+                        <td>2/28/21</td>
+                        <td>92</td>
                     </tr>
                     <tr>
                         <td>Q5</td>
-                        <td>CSS</td>
-                        <td>2/10/21</td>
-                        <td>90</td>
+                        <td>Backend</td>
+                        <td>3/10/21</td>
+                        <td>86</td>
                     </tr>
                     <tr>
                         <td>Q6</td>
-                        <td>CSS</td>
-                        <td>2/10/21</td>
-                        <td>90</td>
+                        <td>Node</td>
+                        <td>3/25/21</td>
+                        <td>93</td>
                     </tr>
                     <tr>
                         <td>Q7</td>
-                        <td>CSS</td>
-                        <td>2/10/21</td>
-                        <td>90</td>
+                        <td>React</td>
+                        <td>4/5/21</td>
+                        <td>96</td>
                     </tr>
                     <tr>
                         <td>Q8</td>
-                        <td>CSS</td>
-                        <td>2/10/21</td>
-                        <td>90</td>
+                        <td>Next</td>
+                        <td>4/15/21</td>
+                        <td>88</td>
                     </tr>
                     <tr>
                         <td>Q9</td>
-                        <td>CSS</td>
-                        <td>2/10/21</td>
-                        <td>90</td>
+                        <td>Express</td>
+                        <td>4/30/21</td>
+                        <td>89</td>
                     </tr>
                     <tr>
                         <td>Q10</td>
-                        <td>CSS</td>
-                        <td>2/10/21</td>
-                        <td>90</td>
+                        <td>Mongo</td>
+                        <td>5/11/21</td>
+                        <td>94</td>
                     </tr>
                 </tbody>
                 <tfoot>
@@ -182,18 +186,18 @@ export default function Lab1() {
                     <label htmlFor="wd-text-fields-username">Username:</label>
                     <input placeholder="jdoe" id="wd-text-fields-username"></input><br />
                     <label htmlFor="wd-text-fields-password">Password:</label>
-                    <input type="password" value="123@#$asd" id="wd-text-fields-password"></input><br />
+                    <input type="password" defaultValue="123@#$asd" id="wd-text-fields-password"></input><br />
                     <label htmlFor="wd-text-fields-first-name">First name:</label>
                     <input type="text" title="John" id="wd-text-fields-first-name" /> <br />
                     <label htmlFor="wd-text-fields-last-name">Last name:</label>
                     <input type="text" placeholder="Doe"
-                        value="Wonderland"
+                        defaultValue="Wonderland"
                         title="The last name"
                         id="wd-text-fields-last-name" />
                     <h5>Text Boxes</h5>
                     <label>Biography:</label><br/>
-                    <textarea id="wd-textarea" cols={30} rows={10}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
+                    <textarea id="wd-textarea" cols={30} rows={10}
+                    defaultValue="Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
                     sed do eiusmod tempor incididunt ut labore et dolore magna
                     aliqua. Ut enim ad minim veniam, quis nostrud exercitation 
                     ullamco laboris nisi ut aliquip ex ea commodo 
@@ -201,16 +205,18 @@ export default function Lab1() {
                     in voluptate velit esse cillum dolore eu fugiat 
                     nulla pariatur. Excepteur sint occaecat 
                     cupidatat non proident, sunt in culpa qui 
-                    officia deserunt mollit anim id est laborum.
+                    officia deserunt mollit anim id est laborum.">
                     </textarea>
+
                     {/* <h5 id="wd-buttons">Buttons</h5>
                     <button type="button"
                             onClick={() => alert("Life is Good!")}
                             id="wd-all-good">
                         Hello World!
                     </button> */}
+
                     <h5 id="wd-radio-buttons">Radio Buttons</h5>
-                    <label>Favourite Movie Genre</label><br/>
+                    <label>Favourite movie genre: </label><br/>
 
                     <input type="radio" name="radio-genre" id="wd-radio-comedy"/>
                     <label htmlFor="wd-radio-comedy">Comedy</label><br/>
@@ -243,19 +249,19 @@ export default function Lab1() {
                     <h5>Select One</h5>
                     <label htmlFor="wd-select-one-genre">Favourite movie genre: </label><br/>
                     <select id="wd-select-one-genre">
-                        <option value="COMEDY">Comedy</option>
-                        <option value="DRAMA">Drama</option>
-                        <option value="SCIFI">Science Fiction</option>
-                        <option value="FANTASY">Fantasy</option>
+                        <option defaultValue="COMEDY">Comedy</option>
+                        <option defaultValue="DRAMA">Drama</option>
+                        <option defaultValue="SCIFI">Science Fiction</option>
+                        <option defaultValue="FANTASY">Fantasy</option>
                         </select>
 
                     <h5>Select many</h5>
                     <label  htmlFor="wd-select-many-genre"> Favorite movie genres: </label><br/>
                     <select multiple id="wd-select-many-genre">
-                    <option value="COMEDY" selected> Comedy          </option>
-                    <option value="DRAMA">           Drama           </option>
-                    <option value="SCIFI"  selected> Science Fiction </option>
-                    <option value="FANTASY">         Fantasy         </option>
+                    <option defaultValue="COMEDY" selected> Comedy          </option>
+                    <option defaultValue="DRAMA">           Drama           </option>
+                    <option defaultValue="SCIFI"  selected> Science Fiction </option>
+                    <option defaultValue="FANTASY">         Fantasy         </option>
                     </select>
                     
                     <h4>Other HTML field Types</h4>
@@ -272,7 +278,7 @@ export default function Lab1() {
 
                     <label htmlFor="wd-text-fields-rating">Rating: </label>
                     <input type="range"
-                    value="4"
+                    defaultValue="4"
                     max="5"
                     placeholder="Doe"
                     id="wd-text-fields-rating"></input><br/>
