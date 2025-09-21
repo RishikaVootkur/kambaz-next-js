@@ -23,7 +23,7 @@ export default function Dashboard() {
                 </div>
                 <div className="wd-dashboard-course">
                     <Link href="/Courses/5101" className="wd-dashboard-course-link">
-                        <Image src="/images/reactjs.jpg" 
+                        <Image src="/images/neu.png" 
                         width={200} 
                         height={150}
                         alt="PDP course image"/>
@@ -38,7 +38,7 @@ export default function Dashboard() {
                 </div>
                 <div className="wd-dashboard-course">
                     <Link href="/Courses/5102" className="wd-dashboard-course-link">
-                        <Image src="/images/reactjs.jpg" 
+                        <Image src="/images/neu.png" 
                         width={200} 
                         height={150}
                         alt="WD course image"/>
@@ -53,7 +53,7 @@ export default function Dashboard() {
                 </div>
                 <div className="wd-dashboard-course">
                     <Link href="/Courses/5201" className="wd-dashboard-course-link">
-                        <Image src="/images/reactjs.jpg" 
+                        <Image src="/images/neu.png" 
                         width={200} 
                         height={150}
                         alt="Algos course image"/>
@@ -68,7 +68,7 @@ export default function Dashboard() {
                 </div>
                 <div className="wd-dashboard-course">
                     <Link href="/Courses/5202" className="wd-dashboard-course-link">
-                        <Image src="/images/reactjs.jpg" 
+                        <Image src="/images/neu.png" 
                         width={200} 
                         height={150}
                         alt="DBMS course image"/>
@@ -83,7 +83,7 @@ export default function Dashboard() {
                 </div>
                 <div className="wd-dashboard-course">
                     <Link href="/Courses/6101" className="wd-dashboard-course-link">
-                        <Image src="/images/reactjs.jpg" 
+                        <Image src="/images/neu.png" 
                         width={200} 
                         height={150}
                         alt="ML course image"/>
@@ -98,7 +98,7 @@ export default function Dashboard() {
                 </div>
                 <div className="wd-dashboard-course">
                     <Link href="/Courses/6102" className="wd-dashboard-course-link">
-                        <Image src="/images/reactjs.jpg" 
+                        <Image src="/images/neu.png" 
                         width={200} 
                         height={150}
                         alt="NLP course image"/>
