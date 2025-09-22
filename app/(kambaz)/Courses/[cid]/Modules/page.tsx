@@ -43,13 +43,33 @@ export default function Modules() {
                 <span className="wd-title">LEARNING OBJECTIVES</span>
                 <ul className="wd-content">
                   <li className="wd-content-item">Learn how to create user interfaces with HTML</li>
-                  <li className="wd-content-item">Deploy the assignment to Netlify</li>
+                  <li className="wd-content-item">Deploy the assignment to Vercel</li>
                 </ul>
               </li>
               <li className="wd-lesson">
                 <span className="wd-title">SLIDES</span>
                 <ul className="wd-content">
                   <li className="wd-content-item">Introduction to HTML and the DOM</li>
+                  <li className="wd-content-item">Formatting Web content with Headings and</li>
+                  <li className="wd-content-item">Formatting content with Lists and Tables</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li className="wd-module">
+            <div className="wd-title">Week 1, Lecture 3 - CSS</div>
+            <ul className="wd-lessons">
+              <li className="wd-lesson">
+                <span className="wd-title">LEARNING OBJECTIVES</span>
+                <ul className="wd-content">
+                  <li className="wd-content-item">Learn how to do styling with CSSL</li>
+                  <li className="wd-content-item">Deploy the assignment to Vercel</li>
+                </ul>
+              </li>
+              <li className="wd-lesson">
+                <span className="wd-title">SLIDES</span>
+                <ul className="wd-content">
+                  <li className="wd-content-item">Introduction to CSS</li>
                   <li className="wd-content-item">Formatting Web content with Headings and</li>
                   <li className="wd-content-item">Formatting content with Lists and Tables</li>
                 </ul>
