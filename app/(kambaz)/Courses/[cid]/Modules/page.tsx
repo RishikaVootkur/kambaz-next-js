@@ -4,7 +4,11 @@ export default function Modules() {
         <div>
           <button>Collapse All</button>
           <button>View Progress</button>
-          <button>Publish All </button>
+          <label htmlFor="publish-action"></label>
+          <select id="publish-action" name="publish-action">
+            <option value="publish">Publish</option>
+            <option value="unpublish">Unpublish</option>
+          </select>
           <button>+ Module</button>
         </div>
   
