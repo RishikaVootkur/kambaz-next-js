@@ -5,7 +5,7 @@ export default function Labs() {
             <h1>Labs</h1>
             <h3>Rishika Reddy Vootkur</h3>
             <h3>Section: CS5610 FA25</h3>
-            <h3>Github: https://github.com/RishikaVootkur/kambaz-next-js</h3>
+            <a href="Github: https://github.com/RishikaVootkur/kambaz-next-js">Github</a>
             <ul>
                 <li>
                     <Link href="/Labs/Lab1" id="wd-lab1-link">
