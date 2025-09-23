@@ -22,10 +22,6 @@ export default function TOC() {
                 <Link href="/" id="wd-lab3-link">
                 Kambaz </Link>
             </li>
-            <li>
-                <Link href="/" id="wd-github">
-                Github</Link>
-            </li>
         </ul>
     );
 }
