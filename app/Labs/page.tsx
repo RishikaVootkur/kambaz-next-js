@@ -3,7 +3,9 @@ export default function Labs() {
     return (
         <div id="wd-labs">
             <h1>Labs</h1>
-            <h2>Rishika Reddy Vootkur - CS5610 FA25</h2>
+            <h3>Rishika Reddy Vootkur</h3>
+            <h3>Section: CS5610 FA25</h3>
+            <h3>Github: https://github.com/RishikaVootkur/kambaz-next-js</h3>
             <ul>
                 <li>
                     <Link href="/Labs/Lab1" id="wd-lab1-link">
@@ -18,11 +20,8 @@ export default function Labs() {
                     Lab 3: JavaScript Fundamentals</Link>
                 </li>
                 <li>
-                    <Link href="/" id="wd-lab3-link">
+                    <Link href="/" id="wd-kambaz-link">
                     Kambaz </Link>
-                </li>
-                <li>
-                    <a href="https://github.com/RishikaVootkur/kambaz-next-js" id="wd-github">My Github Repository</a>
                 </li>
             </ul>
         </div>
