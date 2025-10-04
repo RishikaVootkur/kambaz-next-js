@@ -1,117 +1,200 @@
-import Link from "next/link"
-import Image from "next/image"
+import Link from "next/link";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Card from "react-bootstrap/Card";
+import CardImg from "react-bootstrap/CardImg";
+import CardBody from "react-bootstrap/CardBody";
+import CardTitle from "react-bootstrap/CardTitle";
+import CardText from "react-bootstrap/CardText";
+import Button from "react-bootstrap/Button";
+
 export default function Dashboard() {
-    return (
-        <div id="wd-dashboard">
-            <h1 id="wd-dashboard-title">Dashboard</h1><hr/>
-            <h2 id="wd-dashboard-published">Published Courses (12)</h2><hr/>
-            <div id="wd-dashboard-courses">
-                <div className="wd-dashboard-course">
-                    <Link href="/Courses/1234" className="wd-dashboard-course-link">
-                        <Image src="/images/reactjs.jpg" 
-                        width={200} 
-                        height={150}
-                        alt="React JS course image"/>
-                        <div>
-                            <h5> CS1234 React JS </h5>
-                            <p className="wd-dashboard-course-title">
-                                Full Stack Software Developer
-                            </p>
-                            <button>Go</button>
-                        </div>
-                    </Link>
-                </div>
-                <div className="wd-dashboard-course">
-                    <Link href="/Courses/5101" className="wd-dashboard-course-link">
-                        <Image src="/images/pdp.jpeg" 
-                        width={200} 
-                        height={150}
-                        alt="PDP course image"/>
-                        <div>
-                            <h5> CS5101 PDP </h5>
-                            <p className="wd-dashboard-course-title">
-                                Programming Design Paradigm
-                            </p>
-                            <button>Go</button>
-                        </div>
-                    </Link>
-                </div>
-                <div className="wd-dashboard-course">
-                    <Link href="/Courses/5102" className="wd-dashboard-course-link">
-                        <Image src="/images/wd.jpeg" 
-                        width={200} 
-                        height={150}
-                        alt="WD course image"/>
-                        <div>
-                            <h5> CS5102 WD </h5>
-                            <p className="wd-dashboard-course-title">
-                                Web Development
-                            </p>
-                            <button>Go</button>
-                        </div>
-                    </Link>
-                </div>
-                <div className="wd-dashboard-course">
-                    <Link href="/Courses/5201" className="wd-dashboard-course-link">
-                        <Image src="/images/algo.jpeg" 
-                        width={200} 
-                        height={150}
-                        alt="Algos course image"/>
-                        <div>
-                            <h5> CS5201 Algos </h5>
-                            <p className="wd-dashboard-course-title">
-                                Agorithms
-                            </p>
-                            <button>Go</button>
-                        </div>
-                    </Link>
-                </div>
-                <div className="wd-dashboard-course">
-                    <Link href="/Courses/5202" className="wd-dashboard-course-link">
-                        <Image src="/images/dbms.png" 
-                        width={200} 
-                        height={150}
-                        alt="DBMS course image"/>
-                        <div>
-                            <h5> CS5202 DBMS </h5>
-                            <p className="wd-dashboard-course-title">
-                                Database Management Systems
-                            </p>
-                            <button>Go</button>
-                        </div>
-                    </Link>
-                </div>
-                <div className="wd-dashboard-course">
-                    <Link href="/Courses/6101" className="wd-dashboard-course-link">
-                        <Image src="/images/ml.jpeg" 
-                        width={200} 
-                        height={150}
-                        alt="ML course image"/>
-                        <div>
-                            <h5> CS6101 ML </h5>
-                            <p className="wd-dashboard-course-title">
-                                Machine Learning
-                            </p>
-                            <button>Go</button>
-                        </div>
-                    </Link>
-                </div>
-                <div className="wd-dashboard-course">
-                    <Link href="/Courses/6102" className="wd-dashboard-course-link">
-                        <Image src="/images/nlp.jpeg" 
-                        width={200} 
-                        height={150}
-                        alt="NLP course image"/>
-                        <div>
-                            <h5> CS6102 NLP </h5>
-                            <p className="wd-dashboard-course-title">
-                                Natural Language Processing
-                            </p>
-                            <button>Go</button>
-                        </div>
-                    </Link>
-                </div>
-            </div>
-        </div>
-    );
+  return (
+    <div id="wd-dashboard">
+      <h1 id="wd-dashboard-title">Dashboard</h1>
+      <hr />
+      <h2 id="wd-dashboard-published">Published Courses (12)</h2>
+      <hr />
+
+      <div id="wd-dashboard-courses">
+        <Row xs={1} md={5} className="g-4">
+          <Col className="wd-dashboard-course" style={{ width: "300px" }}>
+            <Card>
+              <Link
+                href="/Courses/1234/Home"
+                className="wd-dashboard-course-link text-decoration-none text-dark">
+                <CardImg
+                  variant="top"
+                  src="/images/reactjs.jpg"
+                  width="100%"
+                  height={160}/>
+                <CardBody>
+                  <CardTitle className="wd-dashboard-course-title text-nowrap overflow-hidden">
+                    CS1234 React JS
+                  </CardTitle>
+                  <CardText
+                    className="wd-dashboard-course-description overflow-hidden"
+                    style={{ height: "100px" }}>
+                    Full Stack Software Developer
+                  </CardText>
+                  <Button variant="primary">Go</Button>
+                </CardBody>
+              </Link>
+            </Card>
+          </Col>
+
+          <Col className="wd-dashboard-course" style={{ width: "300px" }}>
+            <Card>
+              <Link
+                href="/Courses/5101/Home"
+                className="wd-dashboard-course-link text-decoration-none text-dark">
+                <CardImg
+                  variant="top"
+                  src="/images/pdp.jpeg"
+                  width="100%"
+                  height={160}/>
+                <CardBody>
+                  <CardTitle className="wd-dashboard-course-title text-nowrap overflow-hidden">
+                    CS5101 PDP
+                  </CardTitle>
+                  <CardText
+                    className="wd-dashboard-course-description overflow-hidden"
+                    style={{ height: "100px" }}>
+                    Programming Design Paradigm
+                  </CardText>
+                  <Button variant="primary">Go</Button>
+                </CardBody>
+              </Link>
+            </Card>
+          </Col>
+
+          <Col className="wd-dashboard-course" style={{ width: "300px" }}>
+            <Card>
+              <Link
+                href="/Courses/5102/Home"
+                className="wd-dashboard-course-link text-decoration-none text-dark">
+                <CardImg
+                  variant="top"
+                  src="/images/wd.jpeg"
+                  width="100%"
+                  height={160}/>
+                <CardBody>
+                  <CardTitle className="wd-dashboard-course-title text-nowrap overflow-hidden">
+                    CS5102 WD
+                  </CardTitle>
+                  <CardText
+                    className="wd-dashboard-course-description overflow-hidden"
+                    style={{ height: "100px" }}>
+                    Web Development
+                  </CardText>
+                  <Button variant="primary">Go</Button>
+                </CardBody>
+              </Link>
+            </Card>
+          </Col>
+
+          <Col className="wd-dashboard-course" style={{ width: "300px" }}>
+            <Card>
+              <Link
+                href="/Courses/5201/Home"
+                className="wd-dashboard-course-link text-decoration-none text-dark">
+                <CardImg
+                  variant="top"
+                  src="/images/algo.jpeg"
+                  width="100%"
+                  height={160}/>
+                <CardBody>
+                  <CardTitle className="wd-dashboard-course-title text-nowrap overflow-hidden">
+                    CS5201 Algos
+                  </CardTitle>
+                  <CardText
+                    className="wd-dashboard-course-description overflow-hidden"
+                    style={{ height: "100px" }}>
+                    Algorithms
+                  </CardText>
+                  <Button variant="primary">Go</Button>
+                </CardBody>
+              </Link>
+            </Card>
+          </Col>
+
+          <Col className="wd-dashboard-course" style={{ width: "300px" }}>
+            <Card>
+              <Link
+                href="/Courses/5202/Home"
+                className="wd-dashboard-course-link text-decoration-none text-dark">
+                <CardImg
+                  variant="top"
+                  src="/images/dbms.png"
+                  width="100%"
+                  height={160}/>
+                <CardBody>
+                  <CardTitle className="wd-dashboard-course-title text-nowrap overflow-hidden">
+                    CS5202 DBMS
+                  </CardTitle>
+                  <CardText
+                    className="wd-dashboard-course-description overflow-hidden"
+                    style={{ height: "100px" }}>
+                    Database Management Systems
+                  </CardText>
+                  <Button variant="primary">Go</Button>
+                </CardBody>
+              </Link>
+            </Card>
+          </Col>
+
+          <Col className="wd-dashboard-course" style={{ width: "300px" }}>
+            <Card>
+              <Link
+                href="/Courses/6101/Home"
+                className="wd-dashboard-course-link text-decoration-none text-dark">
+                <CardImg
+                  variant="top"
+                  src="/images/ml.jpeg"
+                  width="100%"
+                  height={160}/>
+                <CardBody>
+                  <CardTitle className="wd-dashboard-course-title text-nowrap overflow-hidden">
+                    CS6101 ML
+                  </CardTitle>
+                  <CardText
+                    className="wd-dashboard-course-description overflow-hidden"
+                    style={{ height: "100px" }}>
+                    Machine Learning
+                  </CardText>
+                  <Button variant="primary">Go</Button>
+                </CardBody>
+              </Link>
+            </Card>
+          </Col>
+
+          <Col className="wd-dashboard-course" style={{ width: "300px" }}>
+            <Card>
+              <Link
+                href="/Courses/6102/Home"
+                className="wd-dashboard-course-link text-decoration-none text-dark">
+                <CardImg
+                  variant="top"
+                  src="/images/nlp.jpeg"
+                  width="100%"
+                  height={160}
+                />
+                <CardBody>
+                  <CardTitle className="wd-dashboard-course-title text-nowrap overflow-hidden">
+                    CS6102 NLP
+                  </CardTitle>
+                  <CardText
+                    className="wd-dashboard-course-description overflow-hidden"
+                    style={{ height: "100px" }}>
+                    Natural Language Processing
+                  </CardText>
+                  <Button variant="primary">Go</Button>
+                </CardBody>
+              </Link>
+            </Card>
+          </Col>
+        </Row>
+      </div>
+    </div>
+  );
 }
