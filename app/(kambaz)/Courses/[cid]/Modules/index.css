@@ -27,6 +27,10 @@
   .wd-module {
     border-left: 4px solid #28a745 !important;
   }
+
+  .wd-title {
+    border-left: 4px solid #28a745;
+  }
   
   .wd-lessons .list-group-item {
     display: block !important;

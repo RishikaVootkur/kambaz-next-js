@@ -3,7 +3,7 @@ import GreenCheckmark from "./GreenCheckmark";
 
 export default function LessonControlButtons() {
   return (
-    <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>
+    <div className="float-end">
       <GreenCheckmark />
       <IoEllipsisVertical className="fs-4" />
     </div>

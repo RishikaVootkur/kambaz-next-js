@@ -2,9 +2,14 @@
     border-left: 4px solid transparent;
     color: #dc3545;
   }
+
+  #wd-courses-navigation .list-group-item.active {
+    color: black !important;
+    border-left: 4px solid black !important;
+    background-color: #f8f9fa;
+  }
   
-  #wd-courses-navigation .list-group-item:hover {
-    color: black !important;         
-    border-left: 4px solid black !important;     
-    background-color: #f8f9fa;       
+
+  .wd-lesson {
+    border-left: 3px solid green !important;
   }

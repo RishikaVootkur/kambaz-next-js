@@ -1,34 +1,33 @@
 "use client";
 
 import { Button, Form, Row, Col } from "react-bootstrap";
+import Select from "react-select";
+
 
 export default function AssignmentEditor() {
   return (
     <div id="wd-assignments-editor" className="container mt-4">
       <div className="mx-auto" style={{ maxWidth: "800px" }}>
         <Form>
-          {/* Assignment Name */}
           <Form.Group className="mb-3">
             <Form.Label htmlFor="wd-name">Assignment Name</Form.Label>
             <Form.Control
               type="text"
               id="wd-name"
-              defaultValue="A1 - ENV + HTML"
+              defaultValue="A1"
             />
           </Form.Group>
 
-          {/* Description */}
           <Form.Group className="mb-3">
             <Form.Label htmlFor="wd-description">Description</Form.Label>
             <Form.Control
               as="textarea"
               rows={8}
               id="wd-description"
-              defaultValue="The assignment is available online. Submit a link to the landing page"
+              defaultValue="The assignment is available online. Submit a link to the landing page of your web application."
             />
           </Form.Group>
 
-          {/* Points */}
           <Row className="mb-3 align-items-center">
             <Col sm={3}>
               <Form.Label htmlFor="wd-points" className="text-end d-block mb-0">
@@ -44,7 +43,6 @@ export default function AssignmentEditor() {
             </Col>
           </Row>
 
-          {/* Assignment Group */}
           <Row className="mb-3 align-items-center">
             <Col sm={3}>
               <Form.Label htmlFor="wd-group" className="text-end d-block mb-0">
@@ -61,7 +59,6 @@ export default function AssignmentEditor() {
             </Col>
           </Row>
 
-          {/* Display Grade As */}
           <Row className="mb-3 align-items-center">
             <Col sm={3}>
               <Form.Label htmlFor="wd-display-grade-as" className="text-end d-block mb-0">
@@ -77,7 +74,6 @@ export default function AssignmentEditor() {
             </Col>
           </Row>
 
-          {/* Submission Type */}
           <Row className="mb-3 align-items-start">
             <Col sm={3}>
               <Form.Label htmlFor="wd-submission-type" className="text-end d-block mb-0 mt-2">
@@ -92,7 +88,6 @@ export default function AssignmentEditor() {
                   <option value="External Tool">External Tool</option>
                 </Form.Select>
 
-                {/* Online Entry Options */}
                 <div className="ms-3">
                   <Form.Label className="fw-bold mb-2">Online Entry Options</Form.Label>
                   
@@ -130,7 +125,6 @@ export default function AssignmentEditor() {
             </Col>
           </Row>
 
-          {/* Assign */}
           <Row className="mb-3 align-items-start">
             <Col sm={3}>
               <Form.Label className="text-end d-block mb-0 mt-2">
@@ -139,19 +133,26 @@ export default function AssignmentEditor() {
             </Col>
             <Col sm={9}>
               <div className="border p-3 rounded">
-                {/* Assign To */}
                 <Form.Group className="mb-3">
                   <Form.Label htmlFor="wd-assign-to" className="fw-bold">
                     Assign to
                   </Form.Label>
-                  <Form.Control
-                    type="text"
-                    id="wd-assign-to"
-                    defaultValue="Everyone"
-                  />
+                  <Select
+                  inputId="wd-assign-to"
+                  placeholder="Select..."
+                  classNamePrefix="assign"
+                  isMulti
+                  closeMenuOnSelect={false}
+                  defaultValue={[{ value: "students", label: "Students" }]}
+                  options={[
+                    { value: "everyone", label: "Everyone" },
+                    { value: "students", label: "Students only" },
+                    { value: "tas", label: "TA's" },
+                    { value: "professors", label: "Professor's"},
+                  ]}
+                  styles={{ container: (base) => ({ ...base, width: "100%" }) }}/>
                 </Form.Group>
 
-                {/* Due Date */}
                 <Form.Group className="mb-3">
                   <Form.Label htmlFor="wd-due-date" className="fw-bold">
                     Due
@@ -159,11 +160,10 @@ export default function AssignmentEditor() {
                   <Form.Control
                     type="date"
                     id="wd-due-date"
-                    defaultValue="2024-05-13"
+                    defaultValue="2025-05-13"
                   />
                 </Form.Group>
 
-                {/* Available From and Until */}
                 <Row>
                   <Col sm={6}>
                     <Form.Group className="mb-3">
@@ -173,7 +173,7 @@ export default function AssignmentEditor() {
                       <Form.Control
                         type="date"
                         id="wd-available-from"
-                        defaultValue="2024-05-06"
+                        defaultValue="2025-05-06"
                       />
                     </Form.Group>
                   </Col>
@@ -185,7 +185,7 @@ export default function AssignmentEditor() {
                       <Form.Control
                         type="date"
                         id="wd-available-until"
-                        defaultValue="2024-05-20"
+                        defaultValue="2025-05-20"
                       />
                     </Form.Group>
                   </Col>
@@ -194,7 +194,6 @@ export default function AssignmentEditor() {
             </Col>
           </Row>
 
-          {/* Buttons */}
           <hr />
           <div className="d-flex justify-content-end mt-3 mb-4">
             <Button variant="secondary" className="me-2">

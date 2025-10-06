@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FormControl } from "react-bootstrap";
+import { FormControl, Form } from "react-bootstrap"; 
 
 export default function Profile() {
   return (
@@ -39,16 +39,14 @@ export default function Profile() {
         defaultValue="alice@wonderland.com"
         type="email"
         className="mb-2" />
-      <FormControl
-        as="select"
-        id="wd-role"
-        defaultValue="USER"
-        className="mb-2">
-        <option value="USER">User</option>
-        <option value="ADMIN">Admin</option>
-        <option value="FACULTY">Faculty</option>
-        <option value="STUDENT">Student</option>
-      </FormControl>
+      <Form.Select id="wd-role"
+      defaultValue="USER"
+      className="mb-2">
+      <option value="USER">User</option>
+      <option value="ADMIN">Admin</option>
+      <option value="FACULTY">Faculty</option>
+      <option value="STUDENT">Student</option>
+      </Form.Select>
       <Link
         id="wd-signout-btn"
         href="/Account/Signin"

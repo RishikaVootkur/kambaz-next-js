@@ -7,10 +7,12 @@ export default function Signin() {
       <h1>Sign in</h1>
       <FormControl
         id="wd-username"
+        defaultValue="john doe"
         placeholder="username"
         className="mb-2" />
       <FormControl
         id="wd-password"
+        defaultValue="1234"
         placeholder="password"
         type="password"
         className="mb-2" />
