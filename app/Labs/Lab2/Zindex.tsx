@@ -8,9 +8,9 @@ export default function Zindex() {
                 <div className="wd-zindex-bring-to-front wd-pos-absolute-50-50 wd-dimension-landscape wd-bg-color-blue wd-fg-color-white">
                     Landscape
                 </div>
-                <div className="wd-pos-absolute-120-120 wd-bg-color-red wd-dimension-square">
+                <div className="wd-pos-absolute-120-20 wd-bg-color-red wd-dimension-square">
                     Square
-                </div>
+                </div><br /> <br />
             </div>
         </div>
     );

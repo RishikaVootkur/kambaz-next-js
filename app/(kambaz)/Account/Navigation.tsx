@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { FaUser } from "react-icons/fa";
+import "./styles.css";
 
 export default function AccountNavigation() {
   return (

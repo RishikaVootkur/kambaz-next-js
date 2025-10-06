@@ -11,8 +11,8 @@ export default function BootstrapTables() {
                 </thead>
                 <tbody>
                     <tr className="table-warning"><td>Q1</td><td>HTML</td><td>2/3/21</td><td>85</td></tr>
-                    <tr className="table-warning"><td>Q2</td><td>CSS</td><td>2/10/21</td><td>90</td></tr>
-                    <tr className="table-warning"><td>Q3</td><td>JavaScript</td><td>2/17/21</td><td>90</td></tr>
+                    <tr className="table-danger"><td>Q2</td><td>CSS</td><td>2/10/21</td><td>90</td></tr>
+                    <tr className="table-primary"><td>Q3</td><td>JavaScript</td><td>2/17/21</td><td>90</td></tr>
                 </tbody>
                 <tfoot>
                     <tr className="table-success"><td colSpan={3}>Average</td><td>90</td></tr>

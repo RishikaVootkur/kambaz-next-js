@@ -2,6 +2,7 @@ import FormLabel from 'react-bootstrap/FormLabel';
 import FormControl from 'react-bootstrap/FormControl';
 import FormCheck from 'react-bootstrap/FormCheck';
 import FormRange from 'react-bootstrap/FormRange';
+import FormSelect from 'react-bootstrap/FormSelect';
 import InputGroup from 'react-bootstrap/InputGroup';
 import InputGroupText from 'react-bootstrap/InputGroupText';
 import Row from 'react-bootstrap/Row';
@@ -18,6 +19,18 @@ export default function Bootstrapforms() {
         <FormControl type="email" placeholder="name@example.com" />
         <FormLabel>Example textarea</FormLabel>
         <FormControl as="textarea" rows={3} />
+      </div>
+
+      <div id="wd-css-styling-dropdowns">
+        <h3>Dropdowns</h3>
+        <FormSelect>
+          <option value="0" defaultChecked>
+            Open this select menu
+          </option>
+          <option value="1">One</option>
+          <option value="2">Two</option>
+          <option value="3">Three</option>
+        </FormSelect>
       </div>
 
       <div id="wd-css-styling-switches">
@@ -70,7 +83,7 @@ export default function Bootstrapforms() {
         </Row>
         </div> 
         <div id="wd-css-responsive-forms-2">
-      <h3>Responsive forms 2</h3>
+      <h3>Responsive forms</h3>
       <Form>
         <Row className="mb-3" controlId="formHorizontalEmail">
           <FormLabel column sm={2}>

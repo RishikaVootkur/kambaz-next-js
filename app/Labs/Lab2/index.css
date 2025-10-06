@@ -177,9 +177,9 @@ p#wd-id-selector-2 {
     top: 50px; left:50px;
 }
 
-.wd-pos-absolute-120-120 {
+.wd-pos-absolute-120-20 {
     position: absolute;
-    top: 120px; left: 120px;
+    top: 20px; left: 120px;
 }
 
 .wd-pos-fixed {
@@ -261,7 +261,7 @@ p#wd-id-selector-2 {
     color: white;
     padding: 5px;
     font-size: 12px;
-    z-index: 100px;
+    z-index: 1000;
     width: 220px;
     text-align: center;
 }

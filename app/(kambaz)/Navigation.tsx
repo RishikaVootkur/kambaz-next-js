@@ -7,29 +7,23 @@ import Link from "next/link";
 
 export default function KambazNavigation() {
   return (
-    <ListGroup id="wd-kambaz-navigation" style={{ width: 120 }}
-    className="rounded-0 position-fixed bottom-0 top-0 d-none d-md-block bg-black z-2">
     <ListGroup
+      id="wd-kambaz-navigation"
       className="rounded-0 position-fixed bottom-0 top-0 d-none d-md-block bg-black z-2"
       style={{ width: 120 }}
-      id="wd-kambaz-navigation"
     >
-      <ListGroupItem className="bg-black border-0 text-center" as="a">
-        <a
-          target="_blank"
-          href="https://www.northeastern.edu/"
-          id="wd-neu-link"
-        >
-          <img src="/images/neulogo.svg" width="75px" alt="Northeastern University" />
-        </a>
+      <ListGroupItem
+        as="a"
+        href="https://www.northeastern.edu/"
+        target="_blank"
+        id="wd-neu-link"
+        className="bg-black border-0 text-center"
+      >
+        <img src="/images/neulogo.png" width="75" alt="Northeastern University" />
       </ListGroupItem>
 
       <ListGroupItem className="border-0 bg-black text-center">
-        <Link
-          href="/Account"
-          id="wd-account-link"
-          className="text-white text-decoration-none"
-        >
+        <Link href="/Account" id="wd-account-link" className="text-white text-decoration-none">
           <FaRegCircleUser className="fs-1 text-white" />
           <br />
           Account
@@ -37,11 +31,7 @@ export default function KambazNavigation() {
       </ListGroupItem>
 
       <ListGroupItem className="border-0 bg-white text-center">
-        <Link
-          href="/Dashboard"
-          id="wd-dashboard-link"
-          className="text-danger text-decoration-none"
-        >
+        <Link href="/Dashboard" id="wd-dashboard-link" className="text-danger text-decoration-none">
           <AiOutlineDashboard className="fs-1 text-danger" />
           <br />
           Dashboard
@@ -49,11 +39,7 @@ export default function KambazNavigation() {
       </ListGroupItem>
 
       <ListGroupItem className="border-0 bg-black text-center">
-        <Link
-          href="/Courses"
-          id="wd-courses-link"
-          className="text-danger text-decoration-none"
-        >
+        <Link href="/Dashboard" id="wd-courses-link" className="text-white text-decoration-none">
           <LiaBookSolid className="fs-1 text-danger" />
           <br />
           Courses
@@ -61,11 +47,7 @@ export default function KambazNavigation() {
       </ListGroupItem>
 
       <ListGroupItem className="border-0 bg-black text-center">
-        <Link
-          href="/Calendar"
-          id="wd-calendar-link"
-          className="text-danger text-decoration-none"
-        >
+        <Link href="/Calendar" id="wd-calendar-link" className="text-white text-decoration-none">
           <IoCalendarOutline className="fs-1 text-danger" />
           <br />
           Calendar
@@ -73,11 +55,7 @@ export default function KambazNavigation() {
       </ListGroupItem>
 
       <ListGroupItem className="border-0 bg-black text-center">
-        <Link
-          href="/Inbox"
-          id="wd-inbox-link"
-          className="text-danger text-decoration-none"
-        >
+        <Link href="/Inbox" id="wd-inbox-link" className="text-white text-decoration-none">
           <FaInbox className="fs-1 text-danger" />
           <br />
           Inbox
@@ -85,17 +63,12 @@ export default function KambazNavigation() {
       </ListGroupItem>
 
       <ListGroupItem className="border-0 bg-black text-center">
-        <Link
-          href="/Labs"
-          id="wd-labs-link"
-          className="text-danger text-decoration-none"
-        >
+        <Link href="/Labs" id="wd-labs-link" className="text-white text-decoration-none">
           <LiaCogSolid className="fs-1 text-danger" />
           <br />
           Labs
         </Link>
       </ListGroupItem>
-    </ListGroup>
     </ListGroup>
   );
 }

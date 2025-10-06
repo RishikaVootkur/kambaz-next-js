@@ -18,9 +18,11 @@ export default function Positions() {
           <h2>Absolute Position</h2>
           <div className="wd-pos-relative">
             <div className="wd-pos-absolute-10-10 wd-bg-color-yellow wd-dimension-portrait">Portrait</div>
-            <div className="wd-pos-absolute-50-50 wd-bg-color-blue wd-fg-color-white wd-dimension-landscape">Landscape</div>
-            <div className="wd-pos-absolute-120-120 wd-bg-color-red wd-dimension-square">Square</div>
-          </div>
+            <div className="wd-pos-absolute-50-50 wd-bg-color-blue wd-fg-color-white wd-dimension-landscape">
+              Landscape
+              </div>
+            <div className="wd-pos-absolute-120-20 wd-bg-color-red wd-dimension-square">Square</div>
+          </div> <br /><br />
         </div>
   
         <div id="wd-css-position-fixed">

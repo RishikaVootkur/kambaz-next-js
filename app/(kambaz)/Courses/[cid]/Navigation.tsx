@@ -1,11 +1,12 @@
 import Link from "next/link";
+import "./styles.css";
 
 export default function CourseNavigation() {
   return (
     <div id="wd-courses-navigation" className="wd list-group fs-5 rounded-0">
       <Link href="/Courses/1234/Home"
             id="wd-course-home-link"
-            className="list-group-item active border-0">
+            className="list-group-item text-danger border-0">
         Home
       </Link>
       <Link href="/Courses/1234/Modules"
@@ -33,7 +34,12 @@ export default function CourseNavigation() {
             className="list-group-item text-danger border-0">
         Quizzes
       </Link>
-      <Link href="/Courses/1234/People"
+      <Link href="/Courses/1234/Grades"
+            id="wd-course-grades-link"
+            className="list-group-item text-danger border-0">
+        Grades
+      </Link>
+      <Link href="/Courses/1234/People/Table"
             id="wd-course-people-link"
             className="list-group-item text-danger border-0">
         People
