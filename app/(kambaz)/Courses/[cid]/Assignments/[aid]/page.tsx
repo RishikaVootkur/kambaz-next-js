@@ -2,9 +2,17 @@
 
 import { Button, Form, Row, Col } from "react-bootstrap";
 import Select from "react-select";
-
+import { useParams } from "next/navigation";
+import Link from "next/link";
+import { assignments } from "../../../../Database";
 
 export default function AssignmentEditor() {
+  const params = useParams();
+  const cid = params.cid as string;
+  const aid = params.aid as string;
+  
+  const assignment = assignments.find((a) => a._id === aid);
+
   return (
     <div id="wd-assignments-editor" className="container mt-4">
       <div className="mx-auto" style={{ maxWidth: "800px" }}>
@@ -14,7 +22,7 @@ export default function AssignmentEditor() {
             <Form.Control
               type="text"
               id="wd-name"
-              defaultValue="A1"
+              defaultValue={assignment?.title || "A1"}
             />
           </Form.Group>
 
@@ -24,7 +32,7 @@ export default function AssignmentEditor() {
               as="textarea"
               rows={8}
               id="wd-description"
-              defaultValue="The assignment is available online. Submit a link to the landing page of your web application."
+              defaultValue={assignment?.description || "The assignment is available online. Submit a link to the landing page of your web application."}
             />
           </Form.Group>
 
@@ -38,7 +46,7 @@ export default function AssignmentEditor() {
               <Form.Control
                 type="number"
                 id="wd-points"
-                defaultValue={100}
+                defaultValue={assignment?.points || 100}
               />
             </Col>
           </Row>
@@ -138,19 +146,20 @@ export default function AssignmentEditor() {
                     Assign to
                   </Form.Label>
                   <Select
-                  inputId="wd-assign-to"
-                  placeholder="Select..."
-                  classNamePrefix="assign"
-                  isMulti
-                  closeMenuOnSelect={false}
-                  defaultValue={[{ value: "students", label: "Students" }]}
-                  options={[
-                    { value: "everyone", label: "Everyone" },
-                    { value: "students", label: "Students only" },
-                    { value: "tas", label: "TA's" },
-                    { value: "professors", label: "Professor's"},
-                  ]}
-                  styles={{ container: (base) => ({ ...base, width: "100%" }) }}/>
+                    inputId="wd-assign-to"
+                    placeholder="Select..."
+                    classNamePrefix="assign"
+                    isMulti
+                    closeMenuOnSelect={false}
+                    defaultValue={[{ value: "students", label: "Students" }]}
+                    options={[
+                      { value: "everyone", label: "Everyone" },
+                      { value: "students", label: "Students only" },
+                      { value: "tas", label: "TA's" },
+                      { value: "professors", label: "Professor's"},
+                    ]}
+                    styles={{ container: (base) => ({ ...base, width: "100%" }) }}
+                  />
                 </Form.Group>
 
                 <Form.Group className="mb-3">
@@ -196,12 +205,16 @@ export default function AssignmentEditor() {
 
           <hr />
           <div className="d-flex justify-content-end mt-3 mb-4">
-            <Button variant="secondary" className="me-2">
-              Cancel
-            </Button>
-            <Button variant="danger">
-              Save
-            </Button>
+            <Link href={`/Courses/${cid}/Assignments`}>
+              <Button variant="secondary" className="me-2">
+                Cancel
+              </Button>
+            </Link>
+            <Link href={`/Courses/${cid}/Assignments`}>
+              <Button variant="danger">
+                Save
+              </Button>
+            </Link>
           </div>
         </Form>
       </div>

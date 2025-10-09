@@ -7,8 +7,15 @@ import { Button } from "react-bootstrap";
 import { GoNote } from "react-icons/go";
 import GreenCheckmark from "../Modules/GreenCheckmark";
 import Link from "next/link";
+import { useParams } from "next/navigation";
+import { assignments } from "../../../Database";
 
 export default function Assignments() {
+  const params = useParams();
+  const cid = params.cid as string;
+
+  const filteredAssignments = assignments.filter((assignment) => assignment.course === cid);
+
   return (
     <div id="wd-assignments">
       {/* Search and Add Buttons */}
@@ -52,76 +59,33 @@ export default function Assignments() {
             </div>
           </li>
 
-          {/* Assignment A1 */}
-          <li className="list-group-item p-3 border-0 border-start border-success border-5">
-            <div className="d-flex align-items-start">
-              <BsGripVertical className="me-2 fs-5" />
-              <GoNote className="me-3 fs-5 text-success" />
-              <div className="flex-grow-1">
-                <Link
-                  href="/Courses/1234/Assignments/123"
-                  className="text-decoration-none text-dark fw-bold"
-                >
-                  A1
-                </Link>
-                <div className="text-muted small">
-                  <span className="text-danger">Multiple Modules</span> | Not available until May 6 at 12:00am |
-                  <br />
-                  <strong>Due</strong> May 13 at 11:59pm | 100 pts
+          {/* Dynamic Assignment List */}
+          {filteredAssignments.map((assignment, index) => (
+            <li key={assignment._id} className="wd-assignment-list-item list-group-item p-3 border-0 border-start border-success border-5">
+              <div className="d-flex align-items-start">
+                <BsGripVertical className="me-2 fs-5" />
+                <GoNote className="me-3 fs-5 text-success" />
+                <div className="flex-grow-1">
+                  <Link
+                    href={`/Courses/${cid}/Assignments/${assignment._id}`}
+                    className="wd-assignment-link text-decoration-none text-dark fw-bold"
+                  >
+                    {assignment.title}
+                  </Link>
+                  <div className="text-muted small">
+                    <span className="text-danger">Multiple Modules</span> | Not available until May 6 at 12:00am |
+                    <br />
+                    <strong>Due</strong> May 13 at 11:59pm | 100 pts
+                  </div>
                 </div>
+                <GreenCheckmark />
+                <IoEllipsisVertical className="fs-5 ms-2" />
               </div>
-              <GreenCheckmark />
-              <IoEllipsisVertical className="fs-5 ms-2" />
-            </div>
-            <hr className="mt-3 mb-0" />
-          </li>
-
-          {/* Assignment A2 */}
-          <li className="list-group-item p-3 border-0 border-start border-success border-5">
-            <div className="d-flex align-items-start">
-              <BsGripVertical className="me-2 fs-5" />
-              <GoNote className="me-3 fs-5 text-success" />
-              <div className="flex-grow-1">
-                <Link
-                  href="/Courses/1234/Assignments/124"
-                  className="text-decoration-none text-dark fw-bold"
-                >
-                  A2
-                </Link>
-                <div className="text-muted small">
-                  <span className="text-danger">Multiple Modules</span> | Not available until May 13 at 12:00am |
-                  <br />
-                  <strong>Due</strong> May 20 at 11:59pm | 100 pts
-                </div>
-              </div>
-              <GreenCheckmark />
-              <IoEllipsisVertical className="fs-5 ms-2" />
-            </div>
-            <hr className="mt-3 mb-0" />
-          </li>
-
-          {/* Assignment A3 */}
-          <li className="list-group-item p-3 border-0 border-start border-success border-5">
-            <div className="d-flex align-items-start">
-              <BsGripVertical className="me-2 fs-5" />
-              <GoNote className="me-3 fs-5 text-success" />
-              <div className="flex-grow-1">
-                <Link
-                  href="/Courses/1234/Assignments/125"
-                  className="text-decoration-none text-dark fw-bold"
-                >
-                  A3
-                </Link>
-                <div className="text-muted small">
-                  <span className="text-danger">Multiple Modules</span> | Not available until May 20 at 12:00am |
-                  <br />
-                  <strong>Due</strong> May 27 at 11:59pm | 100 pts
-                </div>
-              </div>
-              <GreenCheckmark />
-              <IoEllipsisVertical className="fs-5 ms-2" />
-            </div>
-          </li>
+              {index < filteredAssignments.length - 1 && (
+                <hr className="mt-3 mb-0" />
+              )}
+            </li>
+          ))}
         </ul>
       </div>
     </div>
