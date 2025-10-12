@@ -13,7 +13,7 @@ export default async function CoursesLayout({
   params: Promise<{ cid: string }>;
 }>) {
   const { cid } = await params;
-  const course = courses.find((c: any) => c._id === cid);
+  const course = courses.find((c) => c._id === cid);
 
   return (
     <div id="wd-courses">
