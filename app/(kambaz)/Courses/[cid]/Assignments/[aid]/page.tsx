@@ -32,8 +32,7 @@ export default function AssignmentEditor() {
               as="textarea"
               rows={8}
               id="wd-description"
-              defaultValue={assignment?.description || "The assignment is available online. Submit a link to the landing page of your web application."}
-            />
+              defaultValue="The assignment is available online. Submit a link to the landing page of your web application."/>
           </Form.Group>
 
           <Row className="mb-3 align-items-center">
@@ -46,7 +45,7 @@ export default function AssignmentEditor() {
               <Form.Control
                 type="number"
                 id="wd-points"
-                defaultValue={assignment?.points || 100}
+                defaultValue="100"
               />
             </Col>
           </Row>
