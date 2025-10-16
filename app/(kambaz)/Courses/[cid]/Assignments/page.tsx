@@ -18,7 +18,6 @@ export default function Assignments() {
 
   return (
     <div id="wd-assignments">
-      {/* Search and Add Buttons */}
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div className="position-relative" style={{ width: "300px" }}>
           <FaSearch
@@ -43,10 +42,8 @@ export default function Assignments() {
         </div>
       </div>
 
-      {/* Bordered Assignments Box */}
       <div className="border rounded">
         <ul className="list-group rounded-0" id="wd-assignment-list">
-          {/* Header */}
           <li className="list-group-item p-3 bg-light border-bottom" id="wd-assignments-title">
             <div className="d-flex align-items-center">
               <BsGripVertical className="me-2 fs-5" />
@@ -59,7 +56,6 @@ export default function Assignments() {
             </div>
           </li>
 
-          {/* Dynamic Assignment List */}
           {filteredAssignments.map((assignment, index) => (
             <li key={assignment._id} className="wd-assignment-list-item list-group-item p-3 border-0 border-start border-success border-5">
               <div className="d-flex align-items-start">

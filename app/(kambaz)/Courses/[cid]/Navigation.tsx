@@ -21,7 +21,7 @@ export default function CourseNavigation({ cid }: { cid: string }) {
         const href = link === "People" 
         ? `/Courses/${cid}/People/Table` 
         : `/Courses/${cid}/${link}`;
-      const isActive = pathname.includes(link);
+        const isActive = pathname.includes(link);
         
         return (
           <Link
@@ -29,7 +29,7 @@ export default function CourseNavigation({ cid }: { cid: string }) {
             href={href}
             id={`wd-course-${link.toLowerCase()}-link`}
             className={`list-group-item text-danger border-0 ${
-              isActive ? "active" : "text-danger"
+              isActive ? "active" : ""
             }`}
           >
             {link}

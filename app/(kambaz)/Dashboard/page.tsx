@@ -26,27 +26,23 @@ export default function Dashboard() {
             <Col
               key={course._id}
               className="wd-dashboard-course"
-              style={{ width: "300px" }}
-            >
+              style={{ width: "300px" }}>
               <Card>
                 <Link
                   href={`/Courses/${course._id}/Home`}
-                  className="wd-dashboard-course-link text-decoration-none text-dark"
-                >
+                  className="wd-dashboard-course-link text-decoration-none text-dark">
                   <Card.Img
-                    src="/images/reactjs.jpg"
+                    src="/images/rocket.jpeg"
                     variant="top"
                     width="100%"
-                    height={160}
-                  />
+                    height={160}/>
                   <Card.Body className="card-body">
                     <Card.Title className="wd-dashboard-course-title text-nowrap overflow-hidden">
                       {course.name}
                     </Card.Title>
                     <Card.Text
-                      className="wd-dashboard-course-description overflow-hidden"
-                      style={{ height: "100px" }}
-                    >
+                      className="wd334wwé-dashboard-course-description overflow-hidden"
+                      style={{ height: "100px" }}>
                       {course.description}
                     </Card.Text>
                     <Button variant="primary">Go</Button>

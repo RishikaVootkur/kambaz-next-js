@@ -23,15 +23,13 @@ export default function KambazNavigation() {
     <ListGroup
       id="wd-kambaz-navigation"
       style={{ width: 120 }}
-      className="rounded-0 position-fixed bottom-0 top-0 d-none d-md-block bg-black z-2"
-    >
+      className="rounded-0 position-fixed bottom-0 top-0 d-none d-md-block bg-black z-2" >
       <ListGroupItem
         id="wd-neu-link"
         target="_blank"
         href="https://www.northeastern.edu/"
         action
-        className="bg-black border-0 text-center"
-      >
+        className="bg-black border-0 text-center" >
         <img src="/images/neulogo.png" width="75px" />
       </ListGroupItem>
 
@@ -40,13 +38,11 @@ export default function KambazNavigation() {
         href="/Account"
         className={`text-center border-0 bg-black ${
           pathname.includes("Account") ? "bg-white text-danger" : "bg-black text-white"
-        }`}
-      >
+        }`} >
         <FaRegCircleUser
           className={`fs-1 ${
             pathname.includes("Account") ? "text-danger" : "text-white"
-          }`}
-        />
+          }`} />
         <br />
         Account
       </ListGroupItem>
@@ -61,8 +57,7 @@ export default function KambazNavigation() {
             href={link.path}
             className={`bg-black text-center border-0 ${
               isActive ? "text-danger bg-white" : "text-white bg-black"
-            }`}
-          >
+            }`} >
             <Icon className="fs-1 text-danger" />
             <br />
             {link.label}

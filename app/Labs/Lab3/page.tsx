@@ -19,7 +19,7 @@ import FindIndex from "./FindIndex";
 import FilterFunction from "./FilterFunction";
 import JsonStringify from "./JsonStringify";
 import House from "./House";
-import Spreading from "./House";
+import Spreading from "./Spreading";
 import Destructing from "./Destructing";
 import FunctionDestructing from "./FunctionDestructing";
 import DestructingImports from "./DestructingImports";
