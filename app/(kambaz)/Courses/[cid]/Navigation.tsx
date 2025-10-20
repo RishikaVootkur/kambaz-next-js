@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import "./styles.css";
 
 export default function CourseNavigation({ cid }: { cid: string }) {
   const pathname = usePathname();
@@ -29,7 +30,7 @@ export default function CourseNavigation({ cid }: { cid: string }) {
             href={href}
             id={`wd-course-${link.toLowerCase()}-link`}
             className={`list-group-item text-danger border-0 ${
-              isActive ? "active" : ""
+              isActive ? "wd-active" : ""
             }`}
           >
             {link}

@@ -3,8 +3,16 @@
   color: #dc3545;
 }
 
+#wd-account-navigation .list-group-item {
+  color: black !important;         
+  border-left: 4px solid black !important;     
+  background-color: #f8f9fa;       
+  border-left: 4px solid transparent;
+  color: #dc3545;
+}
+
 #wd-account-navigation .list-group-item.active-link {
-  color: black !important;
-  border-left: 4px solid black !important;
-  background-color: #f8f9fa;
+color: black !important;
+border-left: 4px solid black !important;
+background-color: #f8f9fa;
 }

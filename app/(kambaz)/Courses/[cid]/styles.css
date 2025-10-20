@@ -1,8 +1,8 @@
-#wd-courses-navigation.list-group .list-group-item {
+#wd-courses-navigation .list-group-item {
   border-left: 4px solid transparent;
 }
 
-#wd-courses-navigation.list-group .list-group-item.active {
+#wd-courses-navigation .list-group-item.wd-active {
   color: black !important;
   border-left: 4px solid black !important;
   background-color: #f8f9fa !important;
