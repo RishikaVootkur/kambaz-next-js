@@ -5,14 +5,14 @@ import "./styles.css";
 
 export default function AccountNavigation() {
   const pathname = usePathname();
-
+  
   return (
     <div id="wd-account-navigation" className="list-group fs-5 rounded-0">
       <Link
         href="/Account/Signin"
         id="wd-account-signin-link"
         className={`list-group-item border-0 ${
-          pathname === "/Account/Signin" ? "active-link" : "text-danger"
+          pathname.includes("Signin") ? "active-link" : "text-danger"
         }`}
       >
         Signin
@@ -21,7 +21,7 @@ export default function AccountNavigation() {
         href="/Account/Signup"
         id="wd-account-signup-link"
         className={`list-group-item border-0 ${
-          pathname === "/Account/Signup" ? "active-link" : "text-danger"
+          pathname.includes("Signup") ? "active-link" : "text-danger"
         }`}
       >
         Signup
@@ -30,7 +30,7 @@ export default function AccountNavigation() {
         href="/Account/Profile"
         id="wd-account-profile-link"
         className={`list-group-item border-0 ${
-          pathname === "/Account/Profile" ? "active-link" : "text-danger"
+          pathname.includes("Profile") ? "active-link" : "text-danger"
         }`}
       >
         Profile

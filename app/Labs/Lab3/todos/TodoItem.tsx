@@ -8,8 +8,7 @@ const TodoItem = ({
       <input 
         type="checkbox" 
         className="me-2" 
-        defaultChecked={todo.done} 
-      />
+        defaultChecked={todo.done}/>
       {todo.title} ({todo.status})
     </ListGroupItem>
   );
