@@ -1,16 +1,13 @@
 "use client";
-
 import Link from "next/link";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
-
 import * as db from "../Database";
 
 export default function Dashboard() {
-  const courses = db.courses; 
-
+  const courses = db.courses;
   return (
     <div id="wd-dashboard">
       <h1 id="wd-dashboard-title">Dashboard</h1>
@@ -19,7 +16,6 @@ export default function Dashboard() {
         Published Courses ({courses.length})
       </h2>
       <hr />
-
       <div id="wd-dashboard-courses">
         <Row xs={1} md={5} className="g-4">
           {courses.map((course) => (
@@ -32,10 +28,11 @@ export default function Dashboard() {
                   href={`/Courses/${course._id}/Home`}
                   className="wd-dashboard-course-link text-decoration-none text-dark">
                   <Card.Img
-                    src="/images/rocket.jpeg"
+                    src={course.image}
                     variant="top"
                     width="100%"
-                    height={160}/>
+                    height={160}
+                  />
                   <Card.Body className="card-body">
                     <Card.Title className="wd-dashboard-course-title text-nowrap overflow-hidden">
                       {course.name}
