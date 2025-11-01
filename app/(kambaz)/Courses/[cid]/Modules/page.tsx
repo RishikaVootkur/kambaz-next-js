@@ -6,6 +6,7 @@ import { BsGripVertical } from "react-icons/bs";
 import ModulesControls from "./ModulesControls";
 import LessonControlButtons from "./LessonControlButtons";
 import ModuleControlButtons from "./ModuleControlButtons";
+import { RootState } from "../../../store";
 
 import { addModule, editModule, updateModule, deleteModule } from "./reducer";
 import { useSelector, useDispatch } from "react-redux";
@@ -15,7 +16,7 @@ import { useState } from "react";
 export default function Modules() {
   const { cid } = useParams();
 
-  const { modules } = useSelector((state: any) => state.modulesReducer);
+  const { modules } = useSelector((state: RootState) => state.modulesReducer);
   const dispatch = useDispatch();
 
   const [moduleName, setModuleName] = useState("");

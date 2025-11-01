@@ -7,6 +7,8 @@ import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addAssignment, updateAssignment } from "../reducer";
+import { RootState } from "../../../../store";
+
 
 export default function AssignmentEditor() {
   const params = useParams();
@@ -15,7 +17,7 @@ export default function AssignmentEditor() {
   const cid = params.cid as string;
   const aid = params.aid as string;
   
-  const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+  const { assignments } = useSelector((state: RootState) => state.assignmentsReducer);
   const assignment = assignments.find((a: any) => a._id === aid);
   
   const [formData, setFormData] = useState({

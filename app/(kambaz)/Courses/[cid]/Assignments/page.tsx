@@ -10,6 +10,8 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import { deleteAssignment } from "./reducer";
+import { RootState } from "../../../store";
+
 
 export default function Assignments() {
   const params = useParams();
@@ -17,8 +19,8 @@ export default function Assignments() {
   const cid = params.cid as string;
   const dispatch = useDispatch();
   
-  const { assignments } = useSelector((state: any) => state.assignmentsReducer);
-  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const { assignments } = useSelector((state: RootState) => state.assignmentsReducer);
+  const { currentUser } = useSelector((state: RootState) => state.accountReducer);
   
   const filteredAssignments = assignments.filter(
     (assignment: any) => assignment.course === cid
