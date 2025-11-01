@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { RootState } from "../store";
@@ -12,7 +13,7 @@ import { addNewCourse, deleteCourse, updateCourse } from "../Courses/reducer";
 import { enrollUser, unenrollUser } from "../Enrollments/reducer";
 
 export default function Dashboard() {
-  const { currentUser } = useSelector((state: RootState) => state.accountReducer);
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
   const { enrollments } = useSelector((state: any) => state.enrollmentsReducer);
   const { courses } = useSelector((state: any) => state.coursesReducer);
   const dispatch = useDispatch();
