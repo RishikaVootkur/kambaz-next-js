@@ -9,7 +9,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { addAssignment, updateAssignment } from "../reducer";
 import { RootState } from "../../../../store";
 
-
 export default function AssignmentEditor() {
   const params = useParams();
   const router = useRouter();
@@ -18,6 +17,8 @@ export default function AssignmentEditor() {
   const aid = params.aid as string;
   
   const { assignments } = useSelector((state: RootState) => state.assignmentsReducer);
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const isFaculty = currentUser?.role === "FACULTY";
   const assignment = assignments.find((a: any) => a._id === aid);
   
   const [formData, setFormData] = useState({
@@ -65,6 +66,7 @@ export default function AssignmentEditor() {
               type="text"
               id="wd-name"
               value={formData.title}
+              disabled={!isFaculty}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
             />
           </Form.Group>
@@ -76,6 +78,7 @@ export default function AssignmentEditor() {
               rows={8}
               id="wd-description"
               value={formData.description}
+              disabled={!isFaculty}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             />
           </Form.Group>
@@ -91,6 +94,7 @@ export default function AssignmentEditor() {
                 type="number"
                 id="wd-points"
                 value={formData.points}
+                disabled={!isFaculty}
                 onChange={(e) => setFormData({ ...formData, points: parseInt(e.target.value) })}
               />
             </Col>
@@ -103,7 +107,7 @@ export default function AssignmentEditor() {
               </Form.Label>
             </Col>
             <Col sm={9}>
-              <Form.Select id="wd-group">
+              <Form.Select id="wd-group" disabled={!isFaculty}>
                 <option value="ASSIGNMENTS">ASSIGNMENTS</option>
                 <option value="QUIZZES">QUIZZES</option>
                 <option value="EXAMS">EXAMS</option>
@@ -119,7 +123,7 @@ export default function AssignmentEditor() {
               </Form.Label>
             </Col>
             <Col sm={9}>
-              <Form.Select id="wd-display-grade-as">
+              <Form.Select id="wd-display-grade-as" disabled={!isFaculty}>
                 <option value="Percentage">Percentage</option>
                 <option value="Points">Points</option>
                 <option value="Letter Grade">Letter Grade</option>
@@ -135,7 +139,7 @@ export default function AssignmentEditor() {
             </Col>
             <Col sm={9}>
               <div className="border p-3 rounded">
-                <Form.Select id="wd-submission-type" className="mb-3">
+                <Form.Select id="wd-submission-type" className="mb-3" disabled={!isFaculty}>
                   <option value="Online">Online</option>
                   <option value="Paper">Paper</option>
                   <option value="External Tool">External Tool</option>
@@ -149,29 +153,34 @@ export default function AssignmentEditor() {
                     id="wd-text-entry"
                     label="Text Entry"
                     className="mb-1"
+                    disabled={!isFaculty}
                   />
                   <Form.Check
                     type="checkbox"
                     id="wd-website-url"
                     label="Website URL"
                     className="mb-1"
+                    disabled={!isFaculty}
                   />
                   <Form.Check
                     type="checkbox"
                     id="wd-media-recordings"
                     label="Media Recordings"
                     className="mb-1"
+                    disabled={!isFaculty}
                   />
                   <Form.Check
                     type="checkbox"
                     id="wd-student-annotation"
                     label="Student Annotation"
                     className="mb-1"
+                    disabled={!isFaculty}
                   />
                   <Form.Check
                     type="checkbox"
                     id="wd-file-upload"
                     label="File Uploads"
+                    disabled={!isFaculty}
                   />
                 </div>
               </div>
@@ -196,6 +205,7 @@ export default function AssignmentEditor() {
                     classNamePrefix="assign"
                     isMulti
                     closeMenuOnSelect={false}
+                    isDisabled={!isFaculty}
                     defaultValue={[{ value: "students", label: "Students" }]}
                     options={[
                       { value: "everyone", label: "Everyone" },
@@ -215,6 +225,7 @@ export default function AssignmentEditor() {
                     type="date"
                     id="wd-due-date"
                     value={formData.dueDate}
+                    disabled={!isFaculty}
                     onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
                   />
                 </Form.Group>
@@ -229,6 +240,7 @@ export default function AssignmentEditor() {
                         type="date"
                         id="wd-available-from"
                         value={formData.availableFrom}
+                        disabled={!isFaculty}
                         onChange={(e) => setFormData({ ...formData, availableFrom: e.target.value })}
                       />
                     </Form.Group>
@@ -242,6 +254,7 @@ export default function AssignmentEditor() {
                         type="date"
                         id="wd-available-until"
                         value={formData.availableUntil}
+                        disabled={!isFaculty}
                         onChange={(e) => setFormData({ ...formData, availableUntil: e.target.value })}
                       />
                     </Form.Group>
@@ -252,21 +265,23 @@ export default function AssignmentEditor() {
           </Row>
 
           <hr />
-          <div className="d-flex justify-content-end mt-3 mb-4">
-            <Button 
-              variant="secondary" 
-              className="me-2"
-              onClick={handleCancel}
-            >
-              Cancel
-            </Button>
-            <Button 
-              variant="danger"
-              onClick={handleSave}
-            >
-              Save
-            </Button>
-          </div>
+          {isFaculty && (
+            <div className="d-flex justify-content-end mt-3 mb-4">
+              <Button 
+                variant="secondary" 
+                className="me-2"
+                onClick={handleCancel}
+              >
+                Cancel
+              </Button>
+              <Button 
+                variant="danger"
+                onClick={handleSave}
+              >
+                Save
+              </Button>
+            </div>
+          )}
         </Form>
       </div>
     </div>

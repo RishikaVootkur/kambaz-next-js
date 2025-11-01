@@ -10,10 +10,12 @@ export default function ModulesControls({
   moduleName,
   setModuleName,
   addModule,
+  isFaculty,
 }: {
   moduleName: string;
   setModuleName: (title: string) => void;
   addModule: () => void;
+  isFaculty: boolean;
 }) {
  const [show, setShow] = useState(false);
  const handleClose = () => setShow(false);
@@ -22,6 +24,7 @@ export default function ModulesControls({
   return (
     <>
     <div id="wd-modules-controls" className="text-nowrap">
+    {isFaculty && (
       <Button
         variant="danger"
         onClick={handleShow}
@@ -29,8 +32,9 @@ export default function ModulesControls({
         className="me-1 float-end"
         id="wd-add-module-btn"
       >
-      <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />Module
+        <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />Module
       </Button>
+    )}
 
       <Dropdown className="float-end me-2">
         <Dropdown.Toggle

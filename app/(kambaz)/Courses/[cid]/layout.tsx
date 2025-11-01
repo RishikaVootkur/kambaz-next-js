@@ -4,7 +4,7 @@ import { ReactNode, useState } from 'react';
 import CourseNavigation from './Navigation';
 import { useSelector } from 'react-redux';
 import { useParams } from 'next/navigation';
-import { FaAlignJustify } from 'react-icons/fa';
+import Breadcrumb from './Breadcrumb';
 import * as db from '../../Database';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { RootState } from "../../store";
@@ -20,15 +20,7 @@ export default function CoursesLayout({ children }: { children: ReactNode }) {
 
   return (
     <div id="wd-courses">
-      <h2>
-        <FaAlignJustify
-          className="me-4 fs-4 mb-1"
-          role="button"
-          title="Toggle course navigation"
-          onClick={toggleNav}
-        />
-        {course?.name}
-      </h2>
+      <Breadcrumb course={course} onToggle={toggleNav} />
       <hr />
       <div className="d-flex">
         {showNav && (
