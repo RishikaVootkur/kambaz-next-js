@@ -1,31 +1,40 @@
-import { ReactNode } from "react";
-import CourseNavigation from "./Navigation";
-import Breadcrumb from "./Breadcrumb";
-import { courses } from "../../Database";
+'use client';
+import { ReactNode, useState } from 'react';
+import CourseNavigation from './Navigation';
+import { useSelector } from 'react-redux';
+import { useParams } from 'next/navigation';
+import { FaAlignJustify } from 'react-icons/fa';
+import * as db from '../../Database';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
+export default function CoursesLayout({ children }: { children: ReactNode }) {
+  const { cid } = useParams<{ cid: string }>();
+  const [modules, setModules] = useState<any[]>(db.modules);
+  const { courses } = useSelector((state: any) => state.coursesReducer);
+  const course = courses.find((course: any) => course._id === cid);
 
-
-export default async function CoursesLayout({
-  children,
-  params,
-}: Readonly<{
-  children: ReactNode;
-  params: Promise<{ cid: string }>;
-}>) {
-  const { cid } = await params;
-  const course = courses.find((c) => c._id === cid);
+  const [showNav, setShowNav] = useState(true);
+  const toggleNav = () => setShowNav((v) => !v);
 
   return (
     <div id="wd-courses">
-      <Breadcrumb course={course} />
+      <h2>
+        <FaAlignJustify
+          className="me-4 fs-4 mb-1"
+          role="button"
+          title="Toggle course navigation"
+          onClick={toggleNav}
+        />
+        {course?.name}
+      </h2>
       <hr />
       <div className="d-flex">
-        <div className="d-none d-md-block">
-          <CourseNavigation cid={cid} />
-        </div>
-        <div className="flex-fill">
-          {children}
-        </div>
+        {showNav && (
+          <div>
+            <CourseNavigation cid={cid} />
+          </div>
+        )}
+        <div className="flex-fill">{children}</div>
       </div>
     </div>
   );

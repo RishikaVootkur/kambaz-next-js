@@ -2,19 +2,35 @@
 
 import { BsGripVertical, BsPlus } from "react-icons/bs";
 import { IoEllipsisVertical } from "react-icons/io5";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaTrash } from "react-icons/fa";
 import { Button } from "react-bootstrap";
 import { GoNote } from "react-icons/go";
 import GreenCheckmark from "../Modules/GreenCheckmark";
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import { assignments } from "../../../Database";
+import { useParams, useRouter } from "next/navigation";
+import { useSelector, useDispatch } from "react-redux";
+import { deleteAssignment } from "./reducer";
 
 export default function Assignments() {
   const params = useParams();
+  const router = useRouter();
   const cid = params.cid as string;
+  const dispatch = useDispatch();
+  
+  const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  
+  const filteredAssignments = assignments.filter(
+    (assignment: any) => assignment.course === cid
+  );
 
-  const filteredAssignments = assignments.filter((assignment) => assignment.course === cid);
+  const handleDelete = (assignmentId: string) => {
+    if (window.confirm("Are you sure you want to remove this assignment?")) {
+      dispatch(deleteAssignment(assignmentId));
+    }
+  };
+
+  const isFaculty = currentUser?.role === "FACULTY";
 
   return (
     <div id="wd-assignments">
@@ -32,14 +48,20 @@ export default function Assignments() {
           />
         </div>
 
-        <div>
-          <Button variant="secondary" className="me-2" id="wd-add-assignment-group">
-            <BsPlus className="fs-4" /> Group
-          </Button>
-          <Button variant="danger" id="wd-add-assignment">
-            <BsPlus className="fs-4" /> Assignment
-          </Button>
-        </div>
+        {isFaculty && (
+          <div>
+            <Button variant="secondary" className="me-2" id="wd-add-assignment-group">
+              <BsPlus className="fs-4" /> Group
+            </Button>
+            <Button 
+              variant="danger" 
+              id="wd-add-assignment"
+              onClick={() => router.push(`/Courses/${cid}/Assignments/new`)}
+            >
+              <BsPlus className="fs-4" /> Assignment
+            </Button>
+          </div>
+        )}
       </div>
 
       <div className="border rounded">
@@ -51,12 +73,16 @@ export default function Assignments() {
               <span className="ms-auto me-2 badge rounded-pill border border-muted text-dark">
                 40% of Total
               </span>
-              <BsPlus className="fs-4" />
-              <IoEllipsisVertical className="fs-5" />
+              {isFaculty && (
+                <>
+                  <BsPlus className="fs-4" />
+                  <IoEllipsisVertical className="fs-5" />
+                </>
+              )}
             </div>
           </li>
 
-          {filteredAssignments.map((assignment, index) => (
+          {filteredAssignments.map((assignment: any, index: number) => (
             <li key={assignment._id} className="wd-assignment-list-item list-group-item p-3 border-0 border-start border-success border-5">
               <div className="d-flex align-items-start">
                 <BsGripVertical className="me-2 fs-5" />
@@ -75,6 +101,13 @@ export default function Assignments() {
                   </div>
                 </div>
                 <GreenCheckmark />
+                {isFaculty && (
+                  <FaTrash 
+                    className="text-danger ms-2 fs-5" 
+                    style={{ cursor: "pointer" }}
+                    onClick={() => handleDelete(assignment._id)}
+                  />
+                )}
                 <IoEllipsisVertical className="fs-5 ms-2" />
               </div>
               {index < filteredAssignments.length - 1 && (

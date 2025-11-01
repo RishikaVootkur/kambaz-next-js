@@ -7,18 +7,15 @@ export default function Signup() {
       <h1>Signup</h1>
       <FormControl
         id="wd-username"
-        defaultValue="john doe"
         placeholder="username"
         className="mb-2" />
       <FormControl
         id="wd-password"
-        defaultValue="1234"
         placeholder="password"
         type="password"
         className="mb-2" />
       <FormControl
         id="wd-verify-password"
-        defaultValue="1234"
         placeholder="verify password"
         type="password"
         className="mb-2" />
