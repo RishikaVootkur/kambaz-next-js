@@ -53,6 +53,21 @@ export default function Dashboard() {
     }
   };
 
+  const handleAddCourse = () => {
+    console.log("🔵 Adding course:", course);
+    dispatch(addNewCourse(course));
+    setCourse({
+      _id: "0", name: "New Course", number: "New Number", 
+      startDate: "2023-09-10", endDate: "2023-12-15",
+      image: "/images/reactjs.jpg", description: "New Description"
+    });
+  };
+
+  const handleUpdateCourse = () => {
+    console.log("🟡 Updating course:", course);
+    dispatch(updateCourse(course));
+  };
+
   return (
     <div id="wd-dashboard">
       <h1 id="wd-dashboard-title">Dashboard</h1>

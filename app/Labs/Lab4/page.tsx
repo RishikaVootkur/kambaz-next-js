@@ -1,5 +1,8 @@
 "use client" 
+import ClickEvent from "./ClickEvent";
+import PassingDataOnEvent from "./PassingDataOnEvent";
 import PassingFunctions from "./PassingFunctions";
+import EventObject from "./EventObject";
 import Counter from "./Counter";
 import BooleanStateVariables from "./BooleanStateVariables";
 import StringStateVariables from "./StringStateVariables";
@@ -23,7 +26,10 @@ export default function Lab4() {
         <div id="wd-lab4">
             <h2>Lab 4</h2>
             <h3>Maintaining State in React Applications</h3>
+            <ClickEvent/>
+            <PassingDataOnEvent/>
             <PassingFunctions theFunction={sayHello} />
+            <EventObject/>
             <Counter />
             <BooleanStateVariables/>
             <StringStateVariables/>
@@ -32,8 +38,6 @@ export default function Lab4() {
             <ArrayStateVariable/>
             <ParentStateComponent/>
             <ReduxExamples/>
-
-
         </div>
         </Provider>
 
