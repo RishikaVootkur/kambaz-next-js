@@ -1,5 +1,6 @@
 "use client";
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import * as client from "../client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { setCurrentUser } from "../reducer";
@@ -13,18 +14,9 @@ export default function Signin() {
   const dispatch = useDispatch();
   const router = useRouter();
   
-  const signin = () => {
-    console.log("Trying to sign in with:", credentials);
-    const user = db.users.find(
-      (u: any) =>
-        u.username === credentials.username &&
-        u.password === credentials.password
-    );
-    console.log("Found user:", user);
-    if (!user) {
-      alert("Invalid username or password!");
-      return;
-    }
+  const signin = async () => { 
+    const user = await client.signin(credentials);
+    if (!user) return;
     dispatch(setCurrentUser(user));
     router.push("/Dashboard");
   };

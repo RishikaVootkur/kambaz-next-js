@@ -1,5 +1,6 @@
 "use client";
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import * as client from "../client";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -12,13 +13,18 @@ export default function Profile() {
   const dispatch = useDispatch();
   const router = useRouter();
   const { currentUser } = useSelector((state: RootState) => state.accountReducer);
-  
+  const updateProfile = async () => {
+    const updatedProfile = await client.updateUser(profile);
+    dispatch(setCurrentUser(updatedProfile));
+  };
+
   const fetchProfile = () => {
     if (!currentUser) return router.push("/Account/Signin");
     setProfile(currentUser);
   };
   
-  const signout = () => {
+  const signout = async () => {
+    await client.signout();
     dispatch(setCurrentUser(null));
     router.push("/Account/Signin");
   };
@@ -90,6 +96,7 @@ export default function Profile() {
             <option value="FACULTY">Faculty</option>
             <option value="STUDENT">Student</option>
           </Form.Select>
+          <Button onClick={updateProfile} className="btn btn-primary w-100 mb-2"> Update </Button>
           <Button 
             onClick={signout} 
             className="w-100 mb-2" 
