@@ -33,7 +33,7 @@ export default function PathParameters() {
       <a
         id="wd-path-parameter-divide"
         className="btn btn-warning"
-        href={`${HTTP_SERVER}/lab5/divide/=${a}/${b}`}
+        href={`${HTTP_SERVER}/lab5/divide/${a}/${b}`}
       >
         Divide {a} ÷ {b}
       </a>

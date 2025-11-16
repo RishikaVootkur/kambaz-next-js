@@ -2,7 +2,10 @@
 "use client";
 
 import { RootState } from "../store";
-import * as client from "../Courses/client";
+import * as coursesClient from "../Courses/client";
+import * as userClient from "../Account/client";
+import * as enrollmentsClient from "../Enrollments/client";
+import { setEnrollments } from "../Enrollments/reducer";
 import Link from "next/link";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -25,31 +28,92 @@ export default function Dashboard() {
     image: "/images/reactjs.jpg", description: "New Description"
   });
 
-  const fetchCourses = async () => {
+  const [showAllCourses, setShowAllCourses] = useState(false);
+  const isFaculty = currentUser?.role === "FACULTY";
+
+  const findCoursesForUser = async () => {
     try {
-      const courses = await client.findMyCourses();
+      const courses = await userClient.findCoursesForUser(currentUser._id);
       dispatch(setCourses(courses));
     } catch (error) {
       console.error(error);
     }
   };
+
+  const fetchAllCoursesWithEnrollment = async () => {
+    try {
+      const allCourses = await coursesClient.fetchAllCourses();
+      const enrolledCourses = await userClient.findCoursesForUser(currentUser._id);
+      
+      const coursesWithEnrollment = allCourses.map((course: any) => {
+        if (enrolledCourses.find((c: any) => c._id === course._id)) {
+          return { ...course, enrolled: true };
+        } else {
+          return course;
+        }
+      });
+      dispatch(setCourses(coursesWithEnrollment));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
-    fetchCourses();
-  }, [currentUser]);
+    const fetchEnrollments = async () => {
+      try {
+        const enrollments = await enrollmentsClient.fetchAllEnrollments();
+        dispatch(setEnrollments(enrollments));
+      } catch (error) {
+        console.error("Error fetching enrollments:", error);
+      }
+    };
+    fetchEnrollments();
+  }, []);
+  
+  useEffect(() => {
+    if (!currentUser) return;
+    
+    if (showAllCourses) {
+      fetchAllCoursesWithEnrollment();  
+    } else {
+      findCoursesForUser(); 
+    }
+  }, [currentUser, showAllCourses]);
 
   const onAddNewCourse = async () => {
-    const newCourse = await client.createCourse(course);
-    dispatch(setCourses([ ...courses, newCourse ]));
+    try {
+      const newCourse = await userClient.createCourse(course);
+      dispatch(setCourses([...courses, newCourse]));
+      setCourse({
+        _id: "0", name: "New Course", number: "New Number", 
+        startDate: "2023-09-10", endDate: "2023-12-15",
+        image: "/images/reactjs.jpg", description: "New Description"
+      });
+    } catch (error) {
+      console.error("Error adding course:", error);
+    }
   };
 
   const onDeleteCourse = async (courseId: string) => {
-    const status = await client.deleteCourse(courseId);
-    dispatch(setCourses(courses.filter((c: any) => c._id !== courseId))); 
+    try {
+      await coursesClient.deleteCourse(courseId);
+      dispatch(setCourses(courses.filter((c: any) => c._id !== courseId))); 
+    } catch (error) {
+      console.error("Error deleting course:", error);
+    }
   };
 
-  const [showAllCourses, setShowAllCourses] = useState(false);
-
-  const isFaculty = currentUser?.role === "FACULTY";
+  const onUpdateCourse = async () => {
+    try {
+      await coursesClient.updateCourse(course);
+      dispatch(setCourses(courses.map((courseItem: any) => { 
+        if (courseItem._id === course._id) { return course; }
+        else { return courseItem; }
+      })));
+    } catch (error) {
+      console.error("Error updating course:", error);
+    }
+  };
 
   const isEnrolled = (courseId: string) => {
     if (!currentUser) return false;
@@ -66,35 +130,20 @@ export default function Dashboard() {
 
   const displayedCourses = showAllCourses ? courses : enrolledCourses;
 
-  const handleEnrollment = (courseId: string) => {
+  const handleEnrollment = async (courseId: string) => {
     if (!currentUser) return;
     
-    if (isEnrolled(courseId)) {
-      dispatch(unenrollUser({ userId: currentUser._id, courseId }));
-    } else {
-      dispatch(enrollUser({ userId: currentUser._id, courseId }));
+    try {
+      if (isEnrolled(courseId)) {
+        await userClient.unenrollFromCourse(currentUser._id, courseId);
+        dispatch(unenrollUser({ userId: currentUser._id, courseId }));
+      } else {
+        await userClient.enrollIntoCourse(currentUser._id, courseId);
+        dispatch(enrollUser({ userId: currentUser._id, courseId }));
+      }
+    } catch (error) {
+      console.error("Enrollment error:", error);
     }
-  };
-
-  const onUpdateCourse = async () => {
-    dispatch(setCourses(courses.map((courseItem: any) => { 
-      if (courseItem._id === course._id) { return course; }
-      else { return courseItem; }
-    })));};
-
-  const handleAddCourse = () => {
-    console.log("🔵 Adding course:", course);
-    dispatch(addNewCourse(course));
-    setCourse({
-      _id: "0", name: "New Course", number: "New Number", 
-      startDate: "2023-09-10", endDate: "2023-12-15",
-      image: "/images/reactjs.jpg", description: "New Description"
-    });
-  };
-
-  const handleUpdateCourse = () => {
-    console.log("🟡 Updating course:", course);
-    dispatch(updateCourse(course));
   };
 
   return (
@@ -106,7 +155,7 @@ export default function Dashboard() {
           <h5>New Course 
             <button className="btn btn-primary float-end"
               id="wd-add-new-course-click"
-              onClick={(onAddNewCourse)}> 
+              onClick={onAddNewCourse}>
               Add
             </button>
             <button className="btn btn-warning float-end me-2"
@@ -183,7 +232,6 @@ export default function Dashboard() {
                         <Button onClick={(event) => {
                           event.preventDefault();
                           onDeleteCourse(course._id);
-                          dispatch(deleteCourse(course._id));
                         }} className="btn btn-danger float-end"
                           id="wd-delete-course-click">
                           Delete

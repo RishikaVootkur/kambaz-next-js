@@ -27,8 +27,27 @@ export default function WorkingWithObjects() {
   return (
     <div id="wd-working-with-objects">
       <h3>Working With Objects</h3>
-      <h4>Modifying Properties</h4>
+      <h4>Retrieving Objects</h4>
+      <a 
+        id="wd-retrieve-assignments"
+        className="btn btn-primary"
+        href={`${HTTP_SERVER}/lab5/assignment`}
+      >
+        Get Assignment
+      </a>
+      <hr />
 
+      <h4>Retrieving Properties</h4>
+      <a 
+        id="wd-retrieve-assignment-title"
+        className="btn btn-primary"
+        href={`${HTTP_SERVER}/lab5/assignment/title`}
+      >
+        Get Title
+      </a>
+      <hr />
+
+      <h4>Modifying Properties</h4>
       <a 
         id="wd-update-assignment-title"
         className="btn btn-primary float-end"
@@ -44,6 +63,25 @@ export default function WorkingWithObjects() {
           setAssignment({ ...assignment, title: e.target.value })
         }
       />
+      <br />
+      <br />
+
+      <h4>Module</h4>
+      <a 
+        id="wd-retrieve-module"
+        className="btn btn-primary me-2"
+        href={`${MODULE_API_URL}`}
+      >
+        Get Module
+      </a>
+
+      <a
+        id="wd-retrieve-module-name"
+        className="btn btn-primary"
+        href={`${MODULE_API_URL}/name`}
+      >
+        Get Module Name
+      </a>
       <br />
       <br />
 
@@ -68,7 +106,7 @@ export default function WorkingWithObjects() {
 
       <a 
         id="wd-update-assignment-completed"
-        className="btn btn-primary float-end"
+        className="btn btn-primary float-end me-2"
         href={`${ASSIGNMENT_API_URL}/completed/${assignment.completed}`}
       >
         Update Completed
@@ -84,50 +122,11 @@ export default function WorkingWithObjects() {
       <label htmlFor="wd-assignment-completed"> Completed</label>
       <hr />
 
-      <h4>Retrieving Objects</h4>
-      <a 
-        id="wd-retrieve-assignments"
-        className="btn btn-primary"
-        href={`${HTTP_SERVER}/lab5/assignment`}
-      >
-        Get Assignment
-      </a>
-      <hr />
-
-      <h4>Retrieving Properties</h4>
-      <a 
-        id="wd-retrieve-assignment-title"
-        className="btn btn-primary"
-        href={`${HTTP_SERVER}/lab5/assignment/title`}
-      >
-        Get Title
-      </a>
-      <hr />
-
-      <h4>Module</h4>
-      <a 
-        id="wd-retrieve-module"
-        className="btn btn-primary me-2"
-        href={`${MODULE_API_URL}`}
-      >
-        Get Module
-      </a>
-
-      <a
-        id="wd-retrieve-module-name"
-        className="btn btn-primary"
-        href={`${MODULE_API_URL}/name`}
-      >
-        Get Module Name
-      </a>
-      <br />
-      <br />
-
       <a 
         id="wd-update-module-name"
         className="btn btn-primary float-end"
         href={`${MODULE_API_URL}/name/${encodeURIComponent(module.name)}`}
-      >
+      > 
         Update Module Name
       </a>
       <FormControl

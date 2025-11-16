@@ -6,8 +6,14 @@ export default function Labs() {
             <h4>Rishika Reddy Vootkur</h4>
             <h4>Section: CS5610 FA25</h4>
             <h4>
-            Github: <a href="https://github.com/RishikaVootkur/kambaz-next-js">https://github.com/RishikaVootkur/kambaz-next-js</a>
+            Github-Client: <a href="https://github.com/RishikaVootkur/kambaz-next-js">https://github.com/RishikaVootkur/kambaz-next-js</a>
             </h4>
+            <h4>
+            Github-Server: <a href="https://github.com/RishikaVootkur/kambaz-node-server-app">https://github.com/RishikaVootkur/kambaz-node-server-app</a>
+            </h4>
+            <h5>
+            Link to the root of the server: <a href="https://kambaz-node-server-app-qegw.onrender.com">https://kambaz-node-server-app-qegw.onrender.com</a>
+            </h5>
             <ul>
                 <li>
                     <Link href="/Labs/Lab1" id="wd-lab1-link">
@@ -26,7 +32,7 @@ export default function Labs() {
                     Lab 4: Maintaining State in React Applications</Link>
                 </li>
                 <li>
-                    <Link href="/Labs/Lab4" id="wd-lab5-link">
+                    <Link href="/Labs/Lab5" id="wd-lab5-link">
                     Lab 5: Implementing RESTful Web APIs with Express.js</Link>
                 </li>
                 <li>

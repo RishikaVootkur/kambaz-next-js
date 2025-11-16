@@ -89,9 +89,9 @@ export default function WorkingWithArrays() {
       </a>
       <hr />
 
-      <h3>Removing from an Array</h3>
-      <button id="wd-remove-todo" className="btn btn-primary float-end" onClick={handleRemove}>
-        Remove Todo with ID = {todo.id}
+      <h3>Deleting from an Array</h3>
+      <button id="wd-delete-todo" className="btn btn-primary float-end" onClick={handleRemove}>
+        Delete Todo with ID = {todo.id}
       </button>
       <FormControl
         className="w-50"

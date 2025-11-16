@@ -9,9 +9,10 @@ import GreenCheckmark from "../Modules/GreenCheckmark";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
-import { deleteAssignment } from "./reducer";
+import { setAssignments, deleteAssignment } from "./reducer";
 import { RootState } from "../../../store";
-
+import { useEffect } from "react";
+import * as client from "./client";
 
 export default function Assignments() {
   const params = useParams();
@@ -26,9 +27,26 @@ export default function Assignments() {
     (assignment: any) => assignment.course === cid
   );
 
-  const handleDelete = (assignmentId: string) => {
+  useEffect(() => {
+    const fetchAssignments = async () => {
+      try {
+        const assignments = await client.findAssignmentsForCourse(cid);
+        dispatch(setAssignments(assignments));
+      } catch (error) {
+        console.error("Error fetching assignments:", error);
+      }
+    };
+    fetchAssignments();
+  }, [cid, dispatch]);
+
+  const handleDelete = async (assignmentId: string) => {
     if (window.confirm("Are you sure you want to remove this assignment?")) {
-      dispatch(deleteAssignment(assignmentId));
+      try {
+        await client.deleteAssignment(assignmentId);
+        dispatch(deleteAssignment(assignmentId));
+      } catch (error) {
+        console.error("Error deleting assignment:", error);
+      }
     }
   };
 
@@ -97,9 +115,9 @@ export default function Assignments() {
                     {assignment.title}
                   </Link>
                   <div className="text-muted small">
-                    <span className="text-danger">Multiple Modules</span> | Not available until May 6 at 12:00am |
+                    <span className="text-danger">Multiple Modules</span> | Not available until {assignment.availableFrom || 'May 6'} |
                     <br />
-                    <strong>Due</strong> May 13 at 11:59pm | 100 pts
+                    <strong>Due</strong> {assignment.dueDate || 'May 13'} | {assignment.points || 100} pts
                   </div>
                 </div>
                 <GreenCheckmark />
