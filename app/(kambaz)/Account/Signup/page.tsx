@@ -28,19 +28,24 @@ export default function Signup() {
     <div className="wd-signup-screen">
       <h1>Sign up</h1>
       <FormControl 
+        style={{ maxWidth: "300px" }}
         value={user.username || ""} 
         onChange={(e) => setUser({ ...user, username: e.target.value })}
         className="wd-username mb-2" 
         placeholder="username" 
       />
       <FormControl 
+        style={{ maxWidth: "300px" }}
         value={user.password || ""} 
         onChange={(e) => setUser({ ...user, password: e.target.value })}
         className="wd-password mb-2" 
         placeholder="password" 
         type="password"
       />
-      <button onClick={signup} className="wd-signup-btn btn btn-primary mb-2 w-100"> 
+      <button 
+        style={{ maxWidth: "300px" }}
+        onClick={signup} 
+        className="wd-signup-btn btn btn-primary mb-2 w-100"> 
         Sign up 
       </button>
       <br />
