@@ -5,13 +5,11 @@ import CourseNavigation from './Navigation';
 import { useSelector } from 'react-redux';
 import { useParams } from 'next/navigation';
 import Breadcrumb from './Breadcrumb';
-import * as db from '../../Database';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { RootState } from "../../store";
 
 export default function CoursesLayout({ children }: { children: ReactNode }) {
   const { cid } = useParams<{ cid: string }>();
-  const [modules, setModules] = useState<any[]>(db.modules);
   const { courses } = useSelector((state: RootState) => state.coursesReducer);
   const course = courses.find((course: any) => course._id === cid);
 
