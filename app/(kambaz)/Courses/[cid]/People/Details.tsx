@@ -32,7 +32,6 @@ export default function PeopleDetails({
   if (!uid) return null;
 
   const startEditing = () => {
-    // pre-fill with current name
     setName(`${user.firstName ?? ""} ${user.lastName ?? ""}`.trim());
     setEditing(true);
   };
@@ -51,8 +50,6 @@ export default function PeopleDetails({
     await client.updateUser(updatedUser);
     setUser(updatedUser);
     setEditing(false);
-    // if you want the panel to close after save, uncomment this:
-    // onClose();
   };
 
   const deleteUser = async (uidToDelete: string) => {
@@ -62,7 +59,6 @@ export default function PeopleDetails({
 
   return (
     <div className="wd-people-details position-fixed top-0 end-0 bottom-0 bg-white p-4 shadow w-25">
-      {/* Close (X) */}
       <button
         onClick={onClose}
         className="btn position-fixed end-0 top-0 wd-close-details"
@@ -70,13 +66,11 @@ export default function PeopleDetails({
         <IoCloseSharp className="fs-1" />
       </button>
 
-      {/* Avatar */}
       <div className="text-center mt-2">
         <FaUserCircle className="text-secondary me-2 fs-1" />
       </div>
       <hr />
 
-      {/* Name + edit / save icon (TOP ONLY) */}
       <div className="d-flex align-items-center justify-content-between mb-3">
         {!editing && (
           <div className="text-danger fs-4 wd-name">
@@ -111,7 +105,6 @@ export default function PeopleDetails({
         )}
       </div>
 
-      {/* Details */}
       <b>Roles:</b> <span className="wd-roles">{user.role}</span> <br />
       <b>Login ID:</b> <span className="wd-login-id">{user.loginId}</span> <br />
       <b>Section:</b> <span className="wd-section">{user.section}</span> <br />
@@ -120,7 +113,6 @@ export default function PeopleDetails({
 
       <hr />
 
-      {/* Buttons */}
       <button
         onClick={() => deleteUser(uid)}
         className="btn btn-danger float-end wd-delete"

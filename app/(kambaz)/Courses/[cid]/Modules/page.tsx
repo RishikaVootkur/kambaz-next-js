@@ -48,21 +48,13 @@ export default function Modules() {
   const onCreateModuleForCourse = async () => {
     if (!cid || !moduleName.trim()) return;
     
-    // Prepare payload with name and course fields
     const payload = { name: moduleName.trim(), course: cid };
     
-    // Send to server - server creates module with MongoDB _id
     const createdModule = await client.createModuleForCourse(cid, payload);
     
-    // FIXED: Use addModule instead of setModules
-    // addModule will add the complete module from database (with its _id and name)
     dispatch(addModule(createdModule));
     
-    // OLD CODE (REMOVED):
-    // dispatch(setModules([...(modules ?? []), createdModule])); // ❌ This was wrong!
-    
-    // Clear the input field
-    setModuleName("");
+        setModuleName("");
   };
 
   return (

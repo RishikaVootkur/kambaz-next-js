@@ -4,7 +4,6 @@ export default function Float() {
       <div id="wd-float-divs">
         <h2>Float</h2>
 
-        {/* 1st Float (Right) */}
         <p>
           <img
             className="wd-float-right"
@@ -20,7 +19,6 @@ export default function Float() {
           quisquam at itaque?
         </p>
 
-        {/* 2nd Float (Left) */}
         <p>
           <img
             className="wd-float-left"
@@ -36,7 +34,6 @@ export default function Float() {
           quisquam at itaque?
         </p>
 
-        {/* 3rd Float (Right) */}
         <p>
           <img
             className="wd-float-right"
@@ -52,7 +49,6 @@ export default function Float() {
           quisquam at itaque?
         </p>
 
-        {/* ✅ 4th Float (Left) — NEW block */}
         <p>
           <img
             className="wd-float-left"
@@ -71,7 +67,6 @@ export default function Float() {
         <div className="wd-float-done"></div>
       </div>
 
-      {/* The colored div float section (keep as is or delete if not needed) */}
       <div id="wd-float-divs">
         <h2>Float</h2>
         <div>
