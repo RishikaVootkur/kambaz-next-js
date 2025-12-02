@@ -7,7 +7,7 @@ import ModulesControls from "./ModulesControls";
 import LessonControlButtons from "./LessonControlButtons";
 import ModuleControlButtons from "./ModuleControlButtons";
 import { RootState } from "../../../store";
-import { setModules, addModule, editModule, updateModule } from "./reducer";
+import { setModules, addModule, editModule, updateModule } from "./reducer"; // addModule is imported here
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
 import * as client from "../../client";
@@ -21,7 +21,7 @@ export default function Modules() {
   const dispatch = useDispatch();
 
   const onUpdateModule = async (module: any) => {
-    await client.updateModule(cid, module);
+    await client.updateModule(module);
     const newModules = modules.map((m: any) =>
       m._id === module._id ? module : m
     );
@@ -29,7 +29,7 @@ export default function Modules() {
   };
 
   const onRemoveModule = async (moduleId: string) => {
-    await client.deleteModule(cid, moduleId);
+    await client.deleteModule(moduleId);
     dispatch(setModules(modules.filter((m: any) => m._id !== moduleId)));
   };
 
@@ -47,9 +47,21 @@ export default function Modules() {
 
   const onCreateModuleForCourse = async () => {
     if (!cid || !moduleName.trim()) return;
-    const payload = { name: moduleName.trim() };
+    
+    // Prepare payload with name and course fields
+    const payload = { name: moduleName.trim(), course: cid };
+    
+    // Send to server - server creates module with MongoDB _id
     const createdModule = await client.createModuleForCourse(cid, payload);
-    dispatch(setModules([...(modules ?? []), createdModule]));
+    
+    // FIXED: Use addModule instead of setModules
+    // addModule will add the complete module from database (with its _id and name)
+    dispatch(addModule(createdModule));
+    
+    // OLD CODE (REMOVED):
+    // dispatch(setModules([...(modules ?? []), createdModule])); // ❌ This was wrong!
+    
+    // Clear the input field
     setModuleName("");
   };
 
@@ -59,7 +71,7 @@ export default function Modules() {
         setModuleName={setModuleName}
         moduleName={moduleName}
         isFaculty={isFaculty}
-        addModule={onCreateModuleForCourse}
+        addModule={onCreateModuleForCourse} // This calls onCreateModuleForCourse
       />
       <br />
       <br />
@@ -74,7 +86,9 @@ export default function Modules() {
           >
             <div className="wd-title p-3 ps-2 bg-secondary">
               <BsGripVertical className="me-2 fs-3" />
+              {/* Display module name when not editing */}
               {(!module.editing || !isFaculty) && module.name}
+              {/* Show input field when editing */}
               {isFaculty && module.editing && (
                 <FormControl
                   className="w-50 d-inline-block"

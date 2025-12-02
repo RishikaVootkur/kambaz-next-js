@@ -1,71 +1,34 @@
-import { Table } from "react-bootstrap";
-import { FaUserCircle } from "react-icons/fa";
+"use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import PeopleTable from "./Table/page";
+import * as client from "../../client";
 
-export default function PeopleTable() {
+export default function People() {
+  const { cid } = useParams();
+  
+  const [users, setUsers] = useState<any[]>([]);
+
+  const fetchUsers = async () => {
+    if (!cid) return;
+    
+    try {
+      const enrolledUsers = await client.findUsersForCourse(cid as string);
+      setUsers(enrolledUsers);
+    } catch (error) {
+      console.error("Error fetching users for course:", error);
+      setUsers([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, [cid]);
+
   return (
-    <div id="wd-people-table">
-      <Table striped>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Login ID</th>
-            <th>Section</th>
-            <th>Role</th>
-            <th>Last Activity</th>
-            <th>Total Activity</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td className="wd-full-name text-nowrap">
-              <FaUserCircle className="me-2 fs-1 text-secondary" />
-              <span className="wd-first-name">Sri</span>{" "}
-              <span className="wd-last-name">Divija</span>
-            </td>
-            <td className="wd-login-id">001234561S</td>
-            <td className="wd-section">S101</td>
-            <td className="wd-role">STUDENT</td>
-            <td className="wd-last-activity">2020-10-01</td>
-            <td className="wd-total-activity">10:21:32</td>
-          </tr>
-          <tr>
-            <td className="wd-full-name text-nowrap">
-              <FaUserCircle className="me-2 fs-1 text-secondary" />
-              <span className="wd-first-name">Rishika</span>{" "}
-              <span className="wd-last-name">Reddy</span>
-            </td>
-            <td className="wd-login-id">001234562S</td>
-            <td className="wd-section">S101</td>
-            <td className="wd-role">STUDENT</td>
-            <td className="wd-last-activity">2020-10-02</td>
-            <td className="wd-total-activity">08:15:47</td>
-          </tr>
-          <tr>
-            <td className="wd-full-name text-nowrap">
-              <FaUserCircle className="me-2 fs-1 text-secondary" />
-              <span className="wd-first-name">Sahithya</span>{" "}
-              <span className="wd-last-name">Reddy</span>
-            </td>
-            <td className="wd-login-id">001234563S</td>
-            <td className="wd-section">S101</td>
-            <td className="wd-role">STUDENT</td>
-            <td className="wd-last-activity">2020-10-03</td>
-            <td className="wd-total-activity">12:45:20</td>
-          </tr>
-          <tr>
-            <td className="wd-full-name text-nowrap">
-              <FaUserCircle className="me-2 fs-1 text-secondary" />
-              <span className="wd-first-name">Srinivas</span>{" "}
-              <span className="wd-last-name">Reddy</span>
-            </td>
-            <td className="wd-login-id">001234564S</td>
-            <td className="wd-section">S101</td>
-            <td className="wd-role">STUDENT</td>
-            <td className="wd-last-activity">2020-10-04</td>
-            <td className="wd-total-activity">09:32:18</td>
-          </tr>
-        </tbody>
-      </Table>
+    <div id="wd-people">
+      <PeopleTable users={users} fetchUsers={fetchUsers} />
     </div>
   );
 }
