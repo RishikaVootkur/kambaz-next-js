@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
 import { Button, Modal, Form, Alert } from "react-bootstrap";
+import { FaCheckCircle } from "react-icons/fa"; // ← Import green checkmark icon
 import * as client from "../client";
 
 export default function QuizDetails() {
@@ -116,6 +117,21 @@ export default function QuizDetails() {
     router.push(`/Courses/${cid}/Quizzes/${qid}/edit`);
   };
 
+  const handlePublishToggle = async () => {
+    try {
+      if (quiz.published) {
+        await client.unpublishQuiz(quiz._id);
+        setQuiz({ ...quiz, published: false }); 
+      } else {
+        await client.publishQuiz(quiz._id);
+        setQuiz({ ...quiz, published: true });
+      }
+    } catch (error) {
+      console.error("Error toggling publish status:", error);
+      alert("Failed to update publish status. Please try again.");
+    }
+  };
+
   const totalPoints = quiz.questions?.reduce((sum: number, q: any) => sum + (q.points || 0), 0) || 0;
   const questionCount = quiz.questions?.length || 0;
 
@@ -129,9 +145,17 @@ export default function QuizDetails() {
           </p>
         </div>
         <div className="d-flex gap-2">
-          {/* Faculty/Admin Buttons */}
           {(isFaculty || isAdmin) && (
             <>
+              <Button 
+                variant={quiz.published ? "success" : "secondary"}
+                onClick={handlePublishToggle}
+                className="d-flex align-items-center"
+              >
+                {quiz.published && <FaCheckCircle className="me-2" />}
+                {quiz.published ? "Publish" : "Unpublish"}
+              </Button>
+              
               <Button variant="light" onClick={handlePreview}>
                 Preview
               </Button>
@@ -141,7 +165,6 @@ export default function QuizDetails() {
             </>
           )}
           
-          {/* Student Buttons */}
           {isStudent && (
             <>
               {latestAttempt && latestAttempt.submittedAt && (

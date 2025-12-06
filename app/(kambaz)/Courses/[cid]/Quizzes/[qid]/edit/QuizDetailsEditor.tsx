@@ -1,9 +1,8 @@
 "use client";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useParams, useRouter } from "next/navigation";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Button, Form, Badge, Modal } from "react-bootstrap";
-import { BsTypeBold, BsTypeItalic, BsTypeUnderline } from "react-icons/bs";
 import * as client from "../../client";
 
 export default function QuizDetailsEditor({ 
@@ -23,48 +22,6 @@ export default function QuizDetailsEditor({
   const [showAssignModal, setShowAssignModal] = useState(false);
   const [assignees, setAssignees] = useState<string[]>(["Everyone"]);
   const [initialQuiz, setInitialQuiz] = useState<any>(null);
-  const descriptionRef = useRef<HTMLTextAreaElement>(null);
-
-  const applyDescriptionFormat = (formatType: 'bold' | 'italic' | 'underline') => {
-    const textarea = descriptionRef.current;
-    if (!textarea) return;
-
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const selectedText = (quiz.description || '').substring(start, end);
-    
-    if (!selectedText) {
-      alert('Please select text first');
-      return;
-    }
-
-    let formattedText = '';
-    
-    switch (formatType) {
-      case 'bold':
-        formattedText = `<strong>${selectedText}</strong>`;
-        break;
-      case 'italic':
-        formattedText = `<em>${selectedText}</em>`;
-        break;
-      case 'underline':
-        formattedText = `<u>${selectedText}</u>`;
-        break;
-    }
-
-    const newText = 
-      (quiz.description || '').substring(0, start) + 
-      formattedText + 
-      (quiz.description || '').substring(end);
-    
-    setQuiz({ ...quiz, description: newText });
-
-    setTimeout(() => {
-      textarea.focus();
-      const newPosition = start + formattedText.length;
-      textarea.setSelectionRange(newPosition, newPosition);
-    }, 10);
-  };
 
   useEffect(() => {
     if (quiz?.assignTo && quiz.assignTo.length > 0) {
@@ -138,65 +95,28 @@ export default function QuizDetailsEditor({
           />
         </Form.Group>
 
-        {/* Quiz Instructions */}
+        {/* Quiz Instructions - REMOVED FORMATTING TOOLBAR */}
         <Form.Group className="mb-4">
           <Form.Label className="fw-normal">Quiz Instructions:</Form.Label>
           
-          {/* Formatting Toolbar */}
-          <div className="border border-bottom-0 rounded-top p-2 bg-light d-flex align-items-center gap-2">
-            <Button 
-              variant="light" 
-              size="sm" 
-              className="border px-3" 
-              title="Bold (select text first)"
-              onClick={() => applyDescriptionFormat('bold')}
-            >
-              <BsTypeBold /> <strong>Bold</strong>
-            </Button>
-            <Button 
-              variant="light" 
-              size="sm" 
-              className="border px-3" 
-              title="Italic (select text first)"
-              onClick={() => applyDescriptionFormat('italic')}
-            >
-              <BsTypeItalic /> <em>Italic</em>
-            </Button>
-            <Button 
-              variant="light" 
-              size="sm" 
-              className="border px-3" 
-              title="Underline (select text first)"
-              onClick={() => applyDescriptionFormat('underline')}
-            >
-              <BsTypeUnderline /> <u>Underline</u>
-            </Button>
-            <small className="text-muted ms-3">💡 Select text, then click a button to format</small>
-          </div>
-
-          {/* Text area */}
+          {/* Simple text area without formatting */}
           <Form.Control
-            ref={descriptionRef}
             as="textarea"
             rows={6}
             value={quiz.description || ""}
             onChange={(e) => setQuiz({ ...quiz, description: e.target.value })}
-            className="border-top-0 rounded-0"
+            className="rounded"
             placeholder="Enter quiz instructions..."
             style={{ fontFamily: 'Arial, sans-serif', fontSize: '14px' }}
           />
           
-          {/* Preview & Word Count */}
-          <div className="border border-top-0 rounded-bottom p-2 bg-light d-flex justify-content-between align-items-start">
-            <div className="flex-grow-1">
-              <small className="text-muted d-block mb-1">Preview:</small>
-              <div dangerouslySetInnerHTML={{ __html: quiz.description || '<em>No instructions yet</em>' }} />
-            </div>
+          {/* Word Count */}
+          <div className="d-flex justify-content-end mt-1">
             <span className="text-muted small">{wordCount} words</span>
           </div>
         </Form.Group>
 
-        {/* Points Section - NEW */}
+        {/* Points Section */}
         <Form.Group className="mb-3 row">
           <div className="col-sm-2"></div>
           <Form.Label className="col-sm-2 col-form-label text-end">Points</Form.Label>
@@ -214,7 +134,6 @@ export default function QuizDetailsEditor({
           </div>
         </Form.Group>
 
-        {/* Quiz Type */}
         <Form.Group className="mb-3 row">
           <div className="col-sm-2"></div>
           <Form.Label className="col-sm-2 col-form-label text-end">Quiz Type</Form.Label>

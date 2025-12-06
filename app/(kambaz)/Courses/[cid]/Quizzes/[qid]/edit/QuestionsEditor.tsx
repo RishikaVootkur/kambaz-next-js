@@ -1,8 +1,8 @@
 "use client";
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Button, Form } from "react-bootstrap";
-import { BsTypeBold, BsTypeItalic, BsTypeUnderline, BsPencil, BsTrash } from "react-icons/bs";
+import { BsPencil, BsTrash } from "react-icons/bs";
 import * as client from "../../client";
 import { useParams } from "next/navigation";
 
@@ -169,9 +169,7 @@ export default function QuestionsEditor({
                       {question.title} 
                       <span className="text-muted ms-2">({question.type.replace('_', ' ')})</span>
                     </h6>
-                    <p className="text-muted mb-0">
-                      <span dangerouslySetInnerHTML={{ __html: question.question }} />
-                    </p>
+                    <p className="text-muted mb-0">{question.question}</p>
                   </div>
                   <div className="d-flex gap-2 align-items-center">
                     <span className="text-muted">{question.points} pts</span>
@@ -217,53 +215,6 @@ function QuestionEditor({
   onCancel: () => void;
 }) {
   const [question, setQuestion] = useState(initialQuestion);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  const applyFormat = (formatType: 'bold' | 'italic' | 'underline') => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const selectedText = question.question.substring(start, end);
-    
-    if (!selectedText) {
-      alert('Please select text first');
-      return;
-    }
-
-    let formattedText = '';
-    let tag = '';
-    
-    switch (formatType) {
-      case 'bold':
-        tag = 'strong';
-        formattedText = `<strong>${selectedText}</strong>`;
-        break;
-      case 'italic':
-        tag = 'em';
-        formattedText = `<em>${selectedText}</em>`;
-        break;
-      case 'underline':
-        tag = 'u';
-        formattedText = `<u>${selectedText}</u>`;
-        break;
-    }
-
-    const newText = 
-      question.question.substring(0, start) + 
-      formattedText + 
-      question.question.substring(end);
-    
-    setQuestion({ ...question, question: newText });
-
-    // Set cursor position after formatted text
-    setTimeout(() => {
-      textarea.focus();
-      const newPosition = start + formattedText.length;
-      textarea.setSelectionRange(newPosition, newPosition);
-    }, 10);
-  };
 
   const handleAddChoice = () => {
     setQuestion({
@@ -378,58 +329,20 @@ function QuestionEditor({
           {question.type === "FILL_BLANK" && "Enter your question text, then define all possible correct answers for the blank. Students will see the question followed by a small text box to type their answer."}
         </p>
 
+        {/* REMOVED FORMATTING TOOLBAR - Simple textarea now */}
         <Form.Group className="mb-4">
           <Form.Label style={{ fontWeight: '600', marginBottom: '0.5rem' }}>Question:</Form.Label>
           
-          {/* Formatting Toolbar */}
-          <div className="border border-bottom-0 rounded-top p-2 bg-light d-flex align-items-center gap-2">
-            <Button 
-              variant="light" 
-              size="sm" 
-              className="border px-3" 
-              title="Bold (select text first)"
-              onClick={() => applyFormat('bold')}
-            >
-              <BsTypeBold /> <strong>Bold</strong>
-            </Button>
-            <Button 
-              variant="light" 
-              size="sm" 
-              className="border px-3" 
-              title="Italic (select text first)"
-              onClick={() => applyFormat('italic')}
-            >
-              <BsTypeItalic /> <em>Italic</em>
-            </Button>
-            <Button 
-              variant="light" 
-              size="sm" 
-              className="border px-3" 
-              title="Underline (select text first)"
-              onClick={() => applyFormat('underline')}
-            >
-              <BsTypeUnderline /> <u>Underline</u>
-            </Button>
-            <small className="text-muted ms-3">💡 Select text, then click a button to format</small>
-          </div>
-
-          {/* Question Text Area */}
+          {/* Simple Question Text Area - No Formatting */}
           <Form.Control
-            ref={textareaRef}
             as="textarea"
             rows={4}
             value={question.question}
             onChange={(e) => setQuestion({ ...question, question: e.target.value })}
-            className="border-top-0 rounded-0 rounded-bottom"
+            className="rounded"
             placeholder="Type your question here..."
             style={{ fontFamily: 'Arial, sans-serif', fontSize: '14px' }}
           />
-          
-          {/* Preview */}
-          <div className="mt-2 p-2 bg-light border rounded">
-            <small className="text-muted d-block mb-1">Preview:</small>
-            <div dangerouslySetInnerHTML={{ __html: question.question }} />
-          </div>
         </Form.Group>
 
         <Form.Group>
