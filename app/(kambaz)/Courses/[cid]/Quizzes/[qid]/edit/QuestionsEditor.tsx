@@ -1,0 +1,593 @@
+"use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useState, useRef, useEffect } from "react";
+import { Button, Form } from "react-bootstrap";
+import { BsTypeBold, BsTypeItalic, BsTypeUnderline, BsPencil, BsTrash } from "react-icons/bs";
+import * as client from "../../client";
+import { useParams } from "next/navigation";
+
+export default function QuestionsEditor({ 
+  quiz, 
+  setQuiz,
+  onUnsavedChanges 
+}: { 
+  quiz: any; 
+  setQuiz: (quiz: any) => void;
+  onUnsavedChanges?: (hasChanges: boolean) => void;
+}) {
+  const params = useParams();
+  const qid = params.qid as string;
+  
+  const [editingQuestionId, setEditingQuestionId] = useState<string | null>(null);
+  const [originalQuestion, setOriginalQuestion] = useState<any>(null);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
+  useEffect(() => {
+    if (onUnsavedChanges) {
+      onUnsavedChanges(hasUnsavedChanges);
+    }
+  }, [hasUnsavedChanges, onUnsavedChanges]);
+
+  const handleAddQuestion = () => {
+    const newQuestion: any = {
+      _id: `temp-${Date.now()}`,
+      type: "MULTIPLE_CHOICE",
+      title: "New Question",
+      points: 1,
+      question: "Enter your question here",
+      choices: [
+        { text: "Option 1", isCorrect: true },
+        { text: "Option 2", isCorrect: false },
+        { text: "Option 3", isCorrect: false },
+        { text: "Option 4", isCorrect: false },
+      ],
+      isNew: true,
+    };
+
+    setQuiz({
+      ...quiz,
+      questions: [...(quiz.questions || []), newQuestion],
+    });
+    setEditingQuestionId(newQuestion._id);
+    setOriginalQuestion(null);
+    setHasUnsavedChanges(true);
+  };
+
+  const handleEditQuestion = (question: any) => {
+    setOriginalQuestion({ ...question });
+    setEditingQuestionId(question._id);
+  };
+
+  const handleSaveQuestion = (question: any) => {
+    const updatedQuestion = { ...question };
+    delete updatedQuestion.isNew;
+    
+    const updatedQuestions = quiz.questions.map((q: any) =>
+      q._id === question._id ? updatedQuestion : q
+    );
+    setQuiz({ ...quiz, questions: updatedQuestions });
+    setEditingQuestionId(null);
+    setOriginalQuestion(null);
+    setHasUnsavedChanges(true);
+  };
+
+  const handleCancelEdit = (questionId: string) => {
+    const question = quiz.questions.find((q: any) => q._id === questionId);
+    
+    if (question?.isNew) {
+      setQuiz({
+        ...quiz,
+        questions: quiz.questions.filter((q: any) => q._id !== questionId),
+      });
+    } else if (originalQuestion) {
+      const updatedQuestions = quiz.questions.map((q: any) =>
+        q._id === questionId ? originalQuestion : q
+      );
+      setQuiz({ ...quiz, questions: updatedQuestions });
+    }
+    
+    setEditingQuestionId(null);
+    setOriginalQuestion(null);
+  };
+
+  const handleDeleteQuestion = (questionId: string) => {
+    if (window.confirm("Are you sure you want to delete this question?")) {
+      setQuiz({
+        ...quiz,
+        questions: quiz.questions.filter((q: any) => q._id !== questionId),
+      });
+      setHasUnsavedChanges(true);
+    }
+  };
+
+  const handleSaveAll = async () => {
+    try {
+      await client.updateQuiz(quiz);
+      setHasUnsavedChanges(false);
+      alert("All changes saved successfully!");
+    } catch (error) {
+      console.error("Error saving questions:", error);
+      alert("Failed to save questions. Please try again.");
+    }
+  };
+
+  const handleCancelAll = () => {
+    if (window.confirm("Are you sure you want to discard all unsaved changes?")) {
+      window.location.reload();
+    }
+  };
+
+  const totalPoints = quiz.questions?.reduce((sum: number, q: any) => sum + (q.points || 0), 0) || 0;
+
+  return (
+    <div>
+      {!editingQuestionId && (
+        <>
+          <div className="d-flex justify-content-between align-items-center mb-4">
+            <h5>Total Points: {totalPoints}</h5>
+            <div className="d-flex gap-2">
+              {hasUnsavedChanges && (
+                <>
+                  <Button variant="light" className="border" onClick={handleCancelAll}>
+                    Cancel Changes
+                  </Button>
+                  <Button variant="success" onClick={handleSaveAll}>
+                    Save All Questions
+                  </Button>
+                </>
+              )}
+              <Button variant="danger" onClick={handleAddQuestion}>
+                + New Question
+              </Button>
+            </div>
+          </div>
+
+          {(!quiz.questions || quiz.questions.length === 0) && (
+            <div className="text-center p-5 border rounded bg-light">
+              <p className="text-muted">No questions yet. Click &quot;+ New Question&quot; to add one.</p>
+            </div>
+          )}
+        </>
+      )}
+
+      <div>
+        {quiz.questions?.map((question: any) => (
+          <div key={question._id}>
+            {editingQuestionId === question._id ? (
+              <QuestionEditor
+                question={question}
+                onSave={handleSaveQuestion}
+                onCancel={() => handleCancelEdit(question._id)}
+              />
+            ) : !editingQuestionId ? (
+              <div 
+                className="border rounded p-3 mb-3 bg-white"
+              >
+                <div className="d-flex justify-content-between align-items-start">
+                  <div className="flex-grow-1">
+                    <h6 className="mb-2">
+                      {question.title} 
+                      <span className="text-muted ms-2">({question.type.replace('_', ' ')})</span>
+                    </h6>
+                    <p className="text-muted mb-0">
+                      <span dangerouslySetInnerHTML={{ __html: question.question }} />
+                    </p>
+                  </div>
+                  <div className="d-flex gap-2 align-items-center">
+                    <span className="text-muted">{question.points} pts</span>
+                    <Button
+                      variant="link"
+                      size="sm"
+                      className="text-primary p-0"
+                      onClick={() => handleEditQuestion(question)}
+                      title="Edit"
+                    >
+                      <BsPencil size={18} />
+                    </Button>
+                    <Button
+                      variant="link"
+                      size="sm"
+                      className="text-danger p-0"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteQuestion(question._id);
+                      }}
+                      title="Delete"
+                    >
+                      <BsTrash size={18} />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function QuestionEditor({
+  question: initialQuestion,
+  onSave,
+  onCancel,
+}: {
+  question: any;
+  onSave: (question: any) => void;
+  onCancel: () => void;
+}) {
+  const [question, setQuestion] = useState(initialQuestion);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const applyFormat = (formatType: 'bold' | 'italic' | 'underline') => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = question.question.substring(start, end);
+    
+    if (!selectedText) {
+      alert('Please select text first');
+      return;
+    }
+
+    let formattedText = '';
+    let tag = '';
+    
+    switch (formatType) {
+      case 'bold':
+        tag = 'strong';
+        formattedText = `<strong>${selectedText}</strong>`;
+        break;
+      case 'italic':
+        tag = 'em';
+        formattedText = `<em>${selectedText}</em>`;
+        break;
+      case 'underline':
+        tag = 'u';
+        formattedText = `<u>${selectedText}</u>`;
+        break;
+    }
+
+    const newText = 
+      question.question.substring(0, start) + 
+      formattedText + 
+      question.question.substring(end);
+    
+    setQuestion({ ...question, question: newText });
+
+    // Set cursor position after formatted text
+    setTimeout(() => {
+      textarea.focus();
+      const newPosition = start + formattedText.length;
+      textarea.setSelectionRange(newPosition, newPosition);
+    }, 10);
+  };
+
+  const handleAddChoice = () => {
+    setQuestion({
+      ...question,
+      choices: [...(question.choices || []), { text: "", isCorrect: false }],
+    });
+  };
+
+  const handleRemoveChoice = (index: number) => {
+    if (question.choices.length <= 2) return;
+    const newChoices = question.choices.filter((_: any, i: number) => i !== index);
+    setQuestion({ ...question, choices: newChoices });
+  };
+
+  const handleChoiceChange = (index: number, text: string) => {
+    const newChoices = [...question.choices];
+    newChoices[index].text = text;
+    setQuestion({ ...question, choices: newChoices });
+  };
+
+  const handleCorrectChoiceChange = (index: number) => {
+    const newChoices = question.choices.map((choice: any, i: number) => ({
+      ...choice,
+      isCorrect: i === index,
+    }));
+    setQuestion({ ...question, choices: newChoices });
+  };
+
+  const handleAddPossibleAnswer = () => {
+    setQuestion({
+      ...question,
+      possibleAnswers: [...(question.possibleAnswers || []), ""],
+    });
+  };
+
+  const handleRemovePossibleAnswer = (index: number) => {
+    if (question.possibleAnswers.length <= 1) return;
+    const newAnswers = question.possibleAnswers.filter((_: any, i: number) => i !== index);
+    setQuestion({ ...question, possibleAnswers: newAnswers });
+  };
+
+  const handlePossibleAnswerChange = (index: number, value: string) => {
+    const newAnswers = [...question.possibleAnswers];
+    newAnswers[index] = value;
+    setQuestion({ ...question, possibleAnswers: newAnswers });
+  };
+
+  return (
+    <div className="border rounded mb-3 bg-white" style={{ maxWidth: '900px' }}>
+      <div className="border-bottom p-3 bg-light">
+        <div className="row g-3 align-items-center">
+          <div className="col-md-4">
+            <Form.Control
+              type="text"
+              value={question.title}
+              onChange={(e) => setQuestion({ ...question, title: e.target.value })}
+              placeholder="Question Title"
+              size="sm"
+            />
+          </div>
+          <div className="col-md-5">
+            <Form.Select
+              value={question.type}
+              size="sm"
+              onChange={(e) => {
+                const newType = e.target.value;
+                const updatedQuestion: any = { ...question, type: newType };
+                
+                if (newType === "MULTIPLE_CHOICE" && !question.choices) {
+                  updatedQuestion.choices = [
+                    { text: "", isCorrect: true },
+                    { text: "", isCorrect: false },
+                  ];
+                } else if (newType === "TRUE_FALSE") {
+                  updatedQuestion.correctAnswer = true;
+                  delete updatedQuestion.choices;
+                  delete updatedQuestion.possibleAnswers;
+                } else if (newType === "FILL_BLANK" && !question.possibleAnswers) {
+                  updatedQuestion.possibleAnswers = [""];
+                  updatedQuestion.caseSensitive = false;
+                  delete updatedQuestion.choices;
+                  delete updatedQuestion.correctAnswer;
+                }
+                
+                setQuestion(updatedQuestion);
+              }}
+            >
+              <option value="MULTIPLE_CHOICE">Multiple Choice</option>
+              <option value="TRUE_FALSE">True/False</option>
+              <option value="FILL_BLANK">Fill in the Blank</option>
+            </Form.Select>
+          </div>
+          <div className="col-md-3">
+            <div className="d-flex align-items-center justify-content-end gap-2">
+              <span style={{ fontSize: '0.9rem', color: '#6c757d' }}>pts:</span>
+              <Form.Control
+                type="number"
+                value={question.points}
+                onChange={(e) => setQuestion({ ...question, points: parseInt(e.target.value) || 0 })}
+                size="sm"
+                style={{ width: '70px' }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="p-4">
+        <p className="text-muted small mb-3">
+          {question.type === "MULTIPLE_CHOICE" && "Enter your question and multiple answers, then select the one correct answer."}
+          {question.type === "TRUE_FALSE" && "Enter your question text, then select if True or False is the correct answer."}
+          {question.type === "FILL_BLANK" && "Enter your question text, then define all possible correct answers for the blank. Students will see the question followed by a small text box to type their answer."}
+        </p>
+
+        <Form.Group className="mb-4">
+          <Form.Label style={{ fontWeight: '600', marginBottom: '0.5rem' }}>Question:</Form.Label>
+          
+          {/* Formatting Toolbar */}
+          <div className="border border-bottom-0 rounded-top p-2 bg-light d-flex align-items-center gap-2">
+            <Button 
+              variant="light" 
+              size="sm" 
+              className="border px-3" 
+              title="Bold (select text first)"
+              onClick={() => applyFormat('bold')}
+            >
+              <BsTypeBold /> <strong>Bold</strong>
+            </Button>
+            <Button 
+              variant="light" 
+              size="sm" 
+              className="border px-3" 
+              title="Italic (select text first)"
+              onClick={() => applyFormat('italic')}
+            >
+              <BsTypeItalic /> <em>Italic</em>
+            </Button>
+            <Button 
+              variant="light" 
+              size="sm" 
+              className="border px-3" 
+              title="Underline (select text first)"
+              onClick={() => applyFormat('underline')}
+            >
+              <BsTypeUnderline /> <u>Underline</u>
+            </Button>
+            <small className="text-muted ms-3">💡 Select text, then click a button to format</small>
+          </div>
+
+          {/* Question Text Area */}
+          <Form.Control
+            ref={textareaRef}
+            as="textarea"
+            rows={4}
+            value={question.question}
+            onChange={(e) => setQuestion({ ...question, question: e.target.value })}
+            className="border-top-0 rounded-0 rounded-bottom"
+            placeholder="Type your question here..."
+            style={{ fontFamily: 'Arial, sans-serif', fontSize: '14px' }}
+          />
+          
+          {/* Preview */}
+          <div className="mt-2 p-2 bg-light border rounded">
+            <small className="text-muted d-block mb-1">Preview:</small>
+            <div dangerouslySetInnerHTML={{ __html: question.question }} />
+          </div>
+        </Form.Group>
+
+        <Form.Group>
+          <Form.Label style={{ fontWeight: '600', marginBottom: '1rem' }}>Answers:</Form.Label>
+
+          {question.type === "MULTIPLE_CHOICE" && (
+            <div>
+              {question.choices?.map((choice: any, index: number) => (
+                <div key={index} className="row mb-3 align-items-center">
+                  <div className="col-auto" style={{ minWidth: '180px' }}>
+                    {choice.isCorrect ? (
+                      <div className="d-flex align-items-center gap-2">
+                        <span style={{ color: '#28a745', fontSize: '1.3rem' }}>➜</span>
+                        <span style={{ color: '#28a745', fontWeight: '600' }}>Correct Answer</span>
+                      </div>
+                    ) : (
+                      <div 
+                        className="d-flex align-items-center gap-2" 
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => handleCorrectChoiceChange(index)}
+                      >
+                        <span style={{ color: 'transparent', fontSize: '1.3rem' }}>➜</span>
+                        <span style={{ color: '#666' }}>Possible Answer</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="col">
+                    <Form.Control
+                      type="text"
+                      value={choice.text}
+                      onChange={(e) => handleChoiceChange(index, e.target.value)}
+                      size="sm"
+                    />
+                  </div>
+                  <div className="col-auto">
+                    {question.choices.length > 2 && (
+                      <button
+                        type="button"
+                        className="btn btn-link btn-sm p-0"
+                        style={{ fontSize: '1.2rem', textDecoration: 'none', color: '#dc3545' }}
+                        onClick={() => handleRemoveChoice(index)}
+                        title="Delete"
+                      >
+                        <BsTrash />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+              <div className="text-center mt-3">
+                <Button 
+                  variant="link" 
+                  className="text-danger text-decoration-none"
+                  size="sm"
+                  onClick={handleAddChoice}
+                >
+                  + Add Another Answer
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {question.type === "TRUE_FALSE" && (
+            <div>
+              <div 
+                className="d-flex align-items-center gap-3 mb-2 p-2 rounded"
+                style={{ cursor: question.correctAnswer !== true ? 'pointer' : 'default' }}
+                onClick={() => question.correctAnswer !== true && setQuestion({ ...question, correctAnswer: true })}
+              >
+                <div className="d-flex align-items-center gap-2" style={{ minWidth: '120px' }}>
+                  {question.correctAnswer === true ? (
+                    <>
+                      <span style={{ color: '#28a745', fontSize: '1.3rem' }}>➜</span>
+                      <span style={{ color: '#28a745', fontWeight: '600' }}>True</span>
+                    </>
+                  ) : (
+                    <>
+                      <span style={{ color: 'transparent', fontSize: '1.3rem' }}>➜</span>
+                      <span style={{ color: '#666' }}>True</span>
+                    </>
+                  )}
+                </div>
+              </div>
+              <div 
+                className="d-flex align-items-center gap-3 p-2 rounded"
+                style={{ cursor: question.correctAnswer !== false ? 'pointer' : 'default' }}
+                onClick={() => question.correctAnswer !== false && setQuestion({ ...question, correctAnswer: false })}
+              >
+                <div className="d-flex align-items-center gap-2" style={{ minWidth: '120px' }}>
+                  {question.correctAnswer === false ? (
+                    <>
+                      <span style={{ color: '#28a745', fontSize: '1.3rem' }}>➜</span>
+                      <span style={{ color: '#28a745', fontWeight: '600' }}>False</span>
+                    </>
+                  ) : (
+                    <>
+                      <span style={{ color: 'transparent', fontSize: '1.3rem' }}>➜</span>
+                      <span style={{ color: '#666' }}>False</span>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {question.type === "FILL_BLANK" && (
+            <div>
+              {question.possibleAnswers?.map((answer: string, index: number) => (
+                <div key={index} className="row mb-3 align-items-center">
+                  <div className="col-auto" style={{ minWidth: '150px' }}>
+                    <span style={{ color: '#666', fontSize: '0.9rem' }}>Possible Answer:</span>
+                  </div>
+                  <div className="col">
+                    <Form.Control
+                      type="text"
+                      value={answer}
+                      onChange={(e) => handlePossibleAnswerChange(index, e.target.value)}
+                      size="sm"
+                    />
+                  </div>
+                  <div className="col-auto">
+                    {question.possibleAnswers.length > 1 && (
+                      <button
+                        type="button"
+                        className="btn btn-link btn-sm p-0"
+                        style={{ fontSize: '1.2rem', textDecoration: 'none', color: '#dc3545' }}
+                        onClick={() => handleRemovePossibleAnswer(index)}
+                        title="Delete"
+                      >
+                        <BsTrash />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+              <div className="text-center mt-3">
+                <Button 
+                  variant="link" 
+                  className="text-danger text-decoration-none"
+                  size="sm"
+                  onClick={handleAddPossibleAnswer}
+                >
+                  + Add Another Answer
+                </Button>
+              </div>
+            </div>
+          )}
+        </Form.Group>
+
+        <div className="d-flex gap-2 mt-4 pt-3">
+          <Button variant="light" className="border" onClick={onCancel}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={() => onSave(question)}>
+            Update Question
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
