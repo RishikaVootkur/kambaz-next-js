@@ -1,5 +1,5 @@
-"use client";
 /* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -29,26 +29,12 @@ export default function TakeQuiz() {
   const isFaculty = currentUser?.role === "FACULTY";
   const isAdmin = currentUser?.role === "ADMIN";
 
-  // Auto-redirect countdown after submission
-  useEffect(() => {
-    if (submitted && redirectCountdown > 0) {
-      const timer = setTimeout(() => {
-        setRedirectCountdown(redirectCountdown - 1);
-      }, 1000);
-      return () => clearTimeout(timer);
-    } else if (submitted && redirectCountdown === 0) {
-      router.push(`/Courses/${cid}/Quizzes`);
-    }
-  }, [submitted, redirectCountdown, router, cid]);
-
-  // Timer initialization
   useEffect(() => {
     if (quiz && quiz.timeLimit && timeRemaining === null && attempt && !submitted) {
       setTimeRemaining(quiz.timeLimit * 60);
     }
   }, [quiz, attempt, submitted, timeRemaining]);
 
-  // Timer countdown
   useEffect(() => {
     if (timeRemaining !== null && timeRemaining > 0 && !submitted) {
       const timer = setInterval(() => {
@@ -64,7 +50,6 @@ export default function TakeQuiz() {
     }
   }, [timeRemaining, submitted]);
 
-  // Auto-submit when timer expires
   useEffect(() => {
     if (timeRemaining === 0 && !submitted && !timerExpired && attempt) {
       setTimerExpired(true);
@@ -111,7 +96,6 @@ export default function TakeQuiz() {
         const attempts = await client.getAttemptsForQuiz(qid);
         const attemptCount = attempts.length;
 
-        // Check for in-progress attempt FIRST
         const inProgressAttempt = attempts.find((a: any) => !a.submittedAt);
         
         if (inProgressAttempt) {
@@ -126,7 +110,6 @@ export default function TakeQuiz() {
           return;
         }
 
-        // Check if single attempt and already completed
         if (!quizData.multipleAttempts && attemptCount >= 1) {
           setError("You have already completed this quiz.");
           setTimeout(() => {
@@ -135,7 +118,6 @@ export default function TakeQuiz() {
           return;
         }
 
-        // Check if all attempts used
         if (quizData.multipleAttempts && attemptCount >= quizData.howManyAttempts) {
           setError("You have used all your attempts for this quiz.");
           setTimeout(() => {
@@ -144,7 +126,6 @@ export default function TakeQuiz() {
           return;
         }
 
-        // Start new attempt
         const newAttempt = await client.startAttempt(qid);
         setAttempt(newAttempt);
         
@@ -177,7 +158,6 @@ export default function TakeQuiz() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Prevent navigation away
   useEffect(() => {
     if (attempt && !submitted && !isFaculty && !isAdmin) {
       const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -235,6 +215,24 @@ export default function TakeQuiz() {
                 : possible.toLowerCase();
               return answerText === possibleText;
             });
+          } else if (question.type === "MULTIPLE_CHOICE_MULTIPLE_ANSWERS") {
+            const correctChoices = question.choices.filter((c: any) => c.isCorrect).map((c: any) => c.text).sort();
+            const userAnswers = Array.isArray(userAnswer) ? [...userAnswer].sort() : [];
+            correct = JSON.stringify(correctChoices) === JSON.stringify(userAnswers);
+          } else if (question.type === "FILL_MULTIPLE_BLANKS") {
+            const userBlanks = userAnswer || {};
+            correct = question.blanks.every((blank: any) => {
+              const userBlankAnswer = question.caseSensitive 
+                ? userBlanks[blank.blankId] 
+                : userBlanks[blank.blankId]?.toLowerCase();
+              
+              return blank.possibleAnswers.some((possible: string) => {
+                const possibleText = question.caseSensitive 
+                  ? possible 
+                  : possible.toLowerCase();
+                return userBlankAnswer === possibleText;
+              });
+            });
           }
 
           if (correct) {
@@ -288,6 +286,24 @@ export default function TakeQuiz() {
           : possible.toLowerCase();
         return answerText === possibleText;
       });
+    } else if (question.type === "MULTIPLE_CHOICE_MULTIPLE_ANSWERS") {
+      const correctChoices = question.choices.filter((c: any) => c.isCorrect).map((c: any) => c.text).sort();
+      const userAnswers = Array.isArray(userAnswer) ? [...userAnswer].sort() : [];
+      return JSON.stringify(correctChoices) === JSON.stringify(userAnswers);
+    } else if (question.type === "FILL_MULTIPLE_BLANKS") {
+      const userBlanks = userAnswer || {};
+      return question.blanks.every((blank: any) => {
+        const userBlankAnswer = question.caseSensitive 
+          ? userBlanks[blank.blankId] 
+          : userBlanks[blank.blankId]?.toLowerCase();
+        
+        return blank.possibleAnswers.some((possible: string) => {
+          const possibleText = question.caseSensitive 
+            ? possible 
+            : possible.toLowerCase();
+          return userBlankAnswer === possibleText;
+        });
+      });
     }
     return false;
   };
@@ -326,92 +342,168 @@ export default function TakeQuiz() {
 
   if (!quiz || !attempt) return <div className="p-4">Loading...</div>;
 
-  if (submitted) {
-    const totalPoints = quiz.questions?.reduce((sum: number, q: any) => sum + (q.points || 0), 0) || 0;
-    const safePercentage = totalPoints > 0 ? ((attempt.score / totalPoints) * 100).toFixed(2) : "0.00";
+if (submitted) {
+  const totalPoints = quiz.questions?.reduce((sum: number, q: any) => sum + (q.points || 0), 0) || 0;
+  const safePercentage = totalPoints > 0 ? ((attempt.score / totalPoints) * 100).toFixed(2) : "0.00";
+  
+  const isLastAttempt = !quiz.multipleAttempts || attempt.attemptNumber >= quiz.howManyAttempts;
+  
+  const shouldShowAnswers = () => {
+    if (quiz.showCorrectAnswers === "IMMEDIATELY") {
+      return true;
+    }
     
-    const isLastAttempt = !quiz.multipleAttempts || attempt.attemptNumber >= quiz.howManyAttempts;
-    const showDetailedAnswers = isLastAttempt || quiz.showCorrectAnswers === "IMMEDIATELY";
+    if (quiz.showCorrectAnswers === "NEVER") {
+      return false;
+    }
     
-    return (
-      <div id="wd-take-quiz" className="p-4">
-        <Alert variant="success">
-          <h4>Quiz Submitted Successfully! ✓</h4>
-          <div className="mt-3">
-            <h5>Your Score: {attempt.score} / {totalPoints} points</h5>
-            <p className="mb-2">Percentage: {safePercentage}%</p>
-            <p className="mb-2">
-              <small>Attempt {attempt.attemptNumber} of {quiz.howManyAttempts || 1}</small>
-            </p>
-            <hr />
-            <p className="mb-0 text-info">
-              <strong>Redirecting to Quizzes page in {redirectCountdown} seconds...</strong>
-            </p>
-            <small className="text-muted">Your score will be displayed on the Quizzes list.</small>
+    if (quiz.showCorrectAnswers === "AFTER_LAST_ATTEMPT") {
+      return isLastAttempt;
+    }
+    
+    if (quiz.showCorrectAnswers === "AFTER_DUE_DATE") {
+      if (!quiz.dueDate) return true;
+      const now = new Date();
+      const dueDate = new Date(quiz.dueDate);
+      return now > dueDate;
+    }
+    
+    return false;
+  };
+  
+  const showDetailedAnswers = shouldShowAnswers();
+
+  const formatAnswer = (answer: any) => {
+    if (answer === undefined || answer === null) {
+      return "Not answered";
+    }
+    if (Array.isArray(answer)) {
+      return answer.join(", ");
+    }
+    if (typeof answer === "object") {
+      return Object.entries(answer)
+        .map(([key, value]) => `${key}: ${value}`)
+        .join(", ");
+    }
+    if (typeof answer === "boolean") {
+      return answer ? "True" : "False";
+    }
+    return String(answer);
+  };
+
+  const getCorrectAnswer = (question: any) => {
+    if (question.type === "MULTIPLE_CHOICE") {
+      const correctChoice = question.choices.find((c: any) => c.isCorrect);
+      return correctChoice?.text || "N/A";
+    } else if (question.type === "TRUE_FALSE") {
+      return question.correctAnswer ? "True" : "False";
+    } else if (question.type === "FILL_BLANK") {
+      return question.possibleAnswers.join(" or ");
+    } else if (question.type === "MULTIPLE_CHOICE_MULTIPLE_ANSWERS") {
+      const correctChoices = question.choices.filter((c: any) => c.isCorrect).map((c: any) => c.text);
+      return correctChoices.join(", ");
+    } else if (question.type === "FILL_MULTIPLE_BLANKS") {
+      return question.blanks.map((blank: any) => 
+        `${blank.blankId}: ${blank.possibleAnswers.join(" or ")}`
+      ).join("; ");
+    }
+    return "N/A";
+  };
+  
+  return (
+    <div id="wd-take-quiz" className="p-4">
+      <Alert variant="success">
+        <h4>Quiz Submitted Successfully! ✓</h4>
+        <div className="mt-3">
+          <h5>Your Score: {attempt.score} / {totalPoints} points</h5>
+          <p className="mb-2">Percentage: {safePercentage}%</p>
+          <p className="mb-2">
+            <small>Attempt {attempt.attemptNumber} of {quiz.howManyAttempts || 1}</small>
+          </p>
+        </div>
+      </Alert>
+
+      <h4 className="mt-4">Detailed Results:</h4>
+      {quiz.questions?.map((question: any, index: number) => {
+        const isCorrect = isCorrectAnswer(question._id);
+        return (
+          <div 
+            key={question._id} 
+            className={`card mb-3 ${isCorrect ? 'border-success' : 'border-danger'}`}
+          >
+            <div className="card-body">
+              <h5>
+                Question {index + 1} ({question.points} pts) {isCorrect ? "✓" : "✗"}
+              </h5>
+              <div dangerouslySetInnerHTML={{ __html: question.question }} className="mb-3" />
+              
+              <div className="mb-2">
+                <strong>Your answer:</strong> {formatAnswer(answers[question._id])}
+              </div>
+              
+              {showDetailedAnswers && !isCorrect && (
+                <div className="mb-2">
+                  <strong className="text-success">Correct answer:</strong>{" "}
+                  <span className="text-success">{getCorrectAnswer(question)}</span>
+                </div>
+              )}
+              
+              {!isCorrect ? (
+                <p className="text-danger mb-0">
+                  <strong>Status:</strong> Incorrect
+                </p>
+              ) : (
+                <p className="text-success mb-0">
+                  <strong>Status:</strong> Correct - {question.points} points earned
+                </p>
+              )}
+            </div>
+          </div>
+        );
+      })}
+
+      {!showDetailedAnswers && (
+        <Alert variant="info" className="mt-4">
+          <h5>Correct Answers Hidden</h5>
+          <div className="mb-0">
+            {quiz.showCorrectAnswers === "NEVER" && (
+              <p>Correct answers are not shown for this quiz.</p>
+            )}
+            {quiz.showCorrectAnswers === "AFTER_LAST_ATTEMPT" && !isLastAttempt && (
+              <p>
+                You have {quiz.howManyAttempts - attempt.attemptNumber} attempt(s) remaining. 
+                Correct answers will be shown after you complete all attempts.
+              </p>
+            )}
+            {quiz.showCorrectAnswers === "AFTER_DUE_DATE" && (
+              <p>
+                Correct answers will be shown after the quiz due date: {formatDateTime(new Date(quiz.dueDate))}
+              </p>
+            )}
           </div>
         </Alert>
+      )}
 
-        {showDetailedAnswers ? (
-          <>
-            <h4 className="mt-4">Detailed Results:</h4>
-            {quiz.questions?.map((question: any, index: number) => (
-              <div 
-                key={question._id} 
-                className={`card mb-3 ${isCorrectAnswer(question._id) ? 'border-success' : 'border-danger'}`}
-              >
-                <div className="card-body">
-                  <h5>
-                    Question {index + 1} ({question.points} pts) {isCorrectAnswer(question._id) ? "✓" : "✗"}
-                  </h5>
-                  <div dangerouslySetInnerHTML={{ __html: question.question }} />
-                  <p className="mt-2">
-                    <strong>Your answer:</strong> {String(answers[question._id])}
-                  </p>
-                  {!isCorrectAnswer(question._id) ? (
-                    <p className="text-danger">
-                      <strong>Status:</strong> Incorrect
-                    </p>
-                  ) : (
-                    <p className="text-success">
-                      <strong>Status:</strong> Correct - {question.points} points earned
-                    </p>
-                  )}
-                </div>
-              </div>
-            ))}
-          </>
-        ) : (
-          <Alert variant="info" className="mt-4">
-            <h5>Answers Hidden</h5>
-            <p className="mb-0">
-              You have {quiz.howManyAttempts - attempt.attemptNumber} attempt(s) remaining. 
-              Detailed answers will be shown after you complete all attempts.
-            </p>
-          </Alert>
-        )}
-
-        <div className="mt-4 d-flex gap-2">
+      <div className="mt-4 d-flex gap-2">
+        <Button 
+          variant="primary" 
+          onClick={() => router.push(`/Courses/${cid}/Quizzes`)}
+        >
+          Go to Quizzes Now
+        </Button>
+        {quiz.multipleAttempts && attempt.attemptNumber < quiz.howManyAttempts && (
           <Button 
-            variant="primary" 
-            onClick={() => router.push(`/Courses/${cid}/Quizzes`)}
+            variant="danger"
+            onClick={() => router.push(`/Courses/${cid}/Quizzes/${qid}/take`)}
           >
-            Go to Quizzes Now
+            Take Quiz Again
           </Button>
-          {quiz.multipleAttempts && attempt.attemptNumber < quiz.howManyAttempts && (
-            <Button 
-              variant="danger"
-              onClick={() => {
-                setRedirectCountdown(999);
-                router.push(`/Courses/${cid}/Quizzes/${qid}`);
-              }}
-            >
-              Take Quiz Again
-            </Button>
-          )}
-        </div>
+        )}
       </div>
-    );
-  }
+    </div>
+  );
+}
+
 
   if (!quiz.questions || quiz.questions.length === 0) {
     return <div className="p-4">No questions available</div>;
@@ -457,7 +549,7 @@ export default function TakeQuiz() {
                 }}
               >
                 <div>
-                  <span style={{ color: '#0c5460', marginRight: '0.5rem' }}>ⓘ</span>
+                  <span style={{ color: '#0c5460', marginRight: '0.5rem' }}>ℹ</span>
                   <span style={{ color: '#0c5460' }}>
                     This quiz has {quiz.questions?.length || 0} questions worth {quiz.questions?.reduce((sum: number, q: any) => sum + (q.points || 0), 0) || 0} points.
                   </span>
@@ -611,6 +703,85 @@ export default function TakeQuiz() {
                       }}
                     />
                   )}
+
+                  {currentQuestion.type === "MULTIPLE_CHOICE_MULTIPLE_ANSWERS" && (
+                    <>
+                      {currentQuestion.choices.map((choice: any, choiceIndex: number) => (
+                        <label 
+                          key={choiceIndex}
+                          style={{ 
+                            display: 'flex', 
+                            alignItems: 'center',
+                            padding: '0.6rem',
+                            border: '1px solid #d1d5db',
+                            borderRadius: '0.25rem',
+                            cursor: 'pointer',
+                            transition: 'background-color 0.2s'
+                          }}
+                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'}
+                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={Array.isArray(answers[currentQuestion._id]) && answers[currentQuestion._id].includes(choice.text)}
+                            onChange={(e) => {
+                              const currentAnswers = Array.isArray(answers[currentQuestion._id]) ? [...answers[currentQuestion._id]] : [];
+                              if (e.target.checked) {
+                                handleAnswerChange(currentQuestion._id, [...currentAnswers, choice.text]);
+                              } else {
+                                handleAnswerChange(currentQuestion._id, currentAnswers.filter((a: string) => a !== choice.text));
+                              }
+                            }}
+                            style={{ width: '1rem', height: '1rem', marginRight: '0.75rem' }}
+                          />
+                          <span style={{ color: '#1f2937', fontSize: '0.9rem' }}>{choice.text}</span>
+                        </label>
+                      ))}
+                    </>
+                  )}
+
+                  {currentQuestion.type === "FILL_MULTIPLE_BLANKS" && (
+  <div>
+    <div style={{ 
+      marginBottom: '1rem', 
+      padding: '1rem', 
+      backgroundColor: '#f8f9fa', 
+      border: '1px solid #dee2e6', 
+      borderRadius: '0.25rem' 
+    }}>
+      <div dangerouslySetInnerHTML={{ 
+        __html: currentQuestion.question.replace(/\[blank(\d+)\]/g, '<strong>[Blank $1]</strong>')
+      }} />
+    </div>
+    
+    {currentQuestion.blanks?.map((blank: any, index: number) => (
+      <div key={blank.blankId} style={{ marginBottom: '1rem' }}>
+        <label style={{ fontWeight: '600', marginBottom: '0.5rem', display: 'block' }}>
+          Blank {index + 1} ({blank.blankId}):
+        </label>
+        <input
+          type="text"
+          value={answers[currentQuestion._id]?.[blank.blankId] || ""}
+          onChange={(e) => {
+            const currentBlanks = answers[currentQuestion._id] || {};
+            handleAnswerChange(currentQuestion._id, {
+              ...currentBlanks,
+              [blank.blankId]: e.target.value
+            });
+          }}
+          placeholder={`Enter answer for blank ${index + 1}`}
+          style={{
+            width: '100%',
+            padding: '0.5rem 1rem',
+            border: '1px solid #d1d5db',
+            borderRadius: '0.25rem',
+            fontSize: '0.95rem'
+          }}
+        />
+      </div>
+    ))}
+  </div>
+)}
                 </div>
               </div>
             </div>

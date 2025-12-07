@@ -1,5 +1,5 @@
-"use client";
 /* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 import { useParams, useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../store";
@@ -31,7 +31,6 @@ export default function Quizzes() {
   const isStudent = !isFaculty && !isAdmin;
   const canManageQuizzes = isFaculty || isAdmin;
   
-  // Calculate points from questions
   const calculatePoints = (quiz: any) => {
     return quiz.questions?.reduce((sum: number, q: any) => sum + (q.points || 0), 0) || 0;
   };
@@ -58,6 +57,12 @@ export default function Quizzes() {
       if (!b.dueDate) return -1;
       return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
     });
+  } else if (sortBy === "availableDate") {
+    displayQuizzes = [...displayQuizzes].sort((a: any, b: any) => {
+      if (!a.availableDate) return 1;
+      if (!b.availableDate) return -1;
+      return new Date(a.availableDate).getTime() - new Date(b.availableDate).getTime();
+    });
   } else if (sortBy === "points") {
     displayQuizzes = [...displayQuizzes].sort((a: any, b: any) => 
       calculatePoints(b) - calculatePoints(a)
@@ -70,7 +75,6 @@ export default function Quizzes() {
         const fetchedQuizzes = await client.findQuizzesForCourse(cid);
         dispatch(setQuizzes(fetchedQuizzes));
 
-        // If student, fetch their attempts for each quiz
         if (isStudent && currentUser?._id) {
           const attemptsMap: any = {};
           for (const quiz of fetchedQuizzes) {
@@ -80,7 +84,7 @@ export default function Quizzes() {
                 attemptsMap[quiz._id] = latestAttempt;
               }
             } catch (error) {
-              // No attempt found for this quiz
+              console.log("No attempt found for quiz:", quiz._id);
             }
           }
           setQuizAttempts(attemptsMap);
@@ -113,7 +117,7 @@ export default function Quizzes() {
         requireRespondusLockDown: false,
         requiredToViewQuizResults: false,
         published: false,
-        questions: [], // Initialize with empty questions array
+        questions: [],
       });
       dispatch(setQuizzes([...quizzes, newQuiz]));
       router.push(`/Courses/${cid}/Quizzes/${newQuiz._id}/edit`);
@@ -147,19 +151,22 @@ export default function Quizzes() {
     }
   };
 
-  const handleSort = () => {
-    if (sortBy === "default") setSortBy("title");
-    else if (sortBy === "title") setSortBy("dueDate");
-    else if (sortBy === "dueDate") setSortBy("points");
-    else setSortBy("default");
-  };
-
   const handleCollapseAll = () => {
     setCollapsed(!collapsed);
   };
 
   const handleViewProgress = () => {
     alert("View Progress feature - Shows student progress on quizzes");
+  };
+
+  const getSortLabel = () => {
+    switch(sortBy) {
+      case "title": return "Title";
+      case "dueDate": return "Due Date";
+      case "availableDate": return "Available Date";
+      case "points": return "Points";
+      default: return "Default";
+    }
   };
 
   const isQuizAvailable = (quiz: any) => {
@@ -226,7 +233,6 @@ export default function Quizzes() {
 
   return (
     <div id="wd-quizzes" className="p-4">
-      {/* Top Controls */}
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div className="d-flex gap-2 align-items-center flex-grow-1">
           <input
@@ -267,9 +273,24 @@ export default function Quizzes() {
                 <BsThreeDotsVertical />
               </Dropdown.Toggle>
               <Dropdown.Menu align="end">
-                <Dropdown.Item onClick={handleSort}>
-                  Sort {sortBy !== "default" && `(by ${sortBy})`}
+                <Dropdown.ItemText className="small text-muted">Sort by: {getSortLabel()}</Dropdown.ItemText>
+                <Dropdown.Divider />
+                <Dropdown.Item onClick={() => setSortBy("default")}>
+                  {sortBy === "default" && "✓ "}Default Order
                 </Dropdown.Item>
+                <Dropdown.Item onClick={() => setSortBy("title")}>
+                  {sortBy === "title" && "✓ "}Title
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => setSortBy("dueDate")}>
+                  {sortBy === "dueDate" && "✓ "}Due Date
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => setSortBy("availableDate")}>
+                  {sortBy === "availableDate" && "✓ "}Available Date
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => setSortBy("points")}>
+                  {sortBy === "points" && "✓ "}Points
+                </Dropdown.Item>
+                <Dropdown.Divider />
                 <Dropdown.Item onClick={handleCollapseAll}>
                   {collapsed ? "Expand All" : "Collapse All"}
                 </Dropdown.Item>
@@ -295,7 +316,6 @@ export default function Quizzes() {
       ) : (
         <div className="border rounded">
           <ul className="list-group rounded-0">
-            {/* Header with dropdown arrow */}
             <li className="list-group-item p-3 ps-4 bg-light border-0 d-flex align-items-center">
               <span 
                 onClick={handleCollapseAll}
@@ -312,7 +332,6 @@ export default function Quizzes() {
               const points = calculatePoints(quiz);
               const questionCount = quiz.questions?.length || 0;
               
-              // Get student's attempt for this quiz
               const attempt = quizAttempts[quiz._id];
               const maxScore = points;
               const percentage = attempt && maxScore > 0 
@@ -363,7 +382,6 @@ export default function Quizzes() {
                           {points} pts
                           {" | "}
                           {questionCount} {questionCount === 1 ? 'Question' : 'Questions'}
-                          {/* Show score ratio for students who completed the quiz */}
                           {isStudent && attempt && (
                             <>
                               {" | "}
@@ -409,9 +427,6 @@ export default function Quizzes() {
                             </Dropdown.Item>
                             <Dropdown.Item onClick={() => handlePublishToggle(quiz)}>
                               {quiz.published ? "Unpublish" : "Publish"}
-                            </Dropdown.Item>
-                            <Dropdown.Item onClick={() => router.push(`/Courses/${cid}/Quizzes/${quiz._id}`)}>
-                              Copy
                             </Dropdown.Item>
                           </Dropdown.Menu>
                         </Dropdown>

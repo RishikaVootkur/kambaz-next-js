@@ -1,5 +1,5 @@
-"use client";
 /* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
@@ -79,6 +79,24 @@ export default function QuizPreview() {
             : possible.toLowerCase();
           return answerText === possibleText;
         });
+      } else if (question.type === "MULTIPLE_CHOICE_MULTIPLE_ANSWERS") {
+        const correctChoices = question.choices.filter((c: any) => c.isCorrect).map((c: any) => c.text).sort();
+        const userAnswers = Array.isArray(userAnswer) ? [...userAnswer].sort() : [];
+        isCorrect = JSON.stringify(correctChoices) === JSON.stringify(userAnswers);
+      } else if (question.type === "FILL_MULTIPLE_BLANKS") {
+        const userBlanks = userAnswer || {};
+        isCorrect = question.blanks.every((blank: any) => {
+          const userBlankAnswer = question.caseSensitive 
+            ? userBlanks[blank.blankId] 
+            : userBlanks[blank.blankId]?.toLowerCase();
+          
+          return blank.possibleAnswers.some((possible: string) => {
+            const possibleText = question.caseSensitive 
+              ? possible 
+              : possible.toLowerCase();
+            return userBlankAnswer === possibleText;
+          });
+        });
       }
 
       if (isCorrect) {
@@ -111,6 +129,24 @@ export default function QuizPreview() {
           ? possible 
           : possible.toLowerCase();
         return answerText === possibleText;
+      });
+    } else if (question.type === "MULTIPLE_CHOICE_MULTIPLE_ANSWERS") {
+      const correctChoices = question.choices.filter((c: any) => c.isCorrect).map((c: any) => c.text).sort();
+      const userAnswers = Array.isArray(userAnswer) ? [...userAnswer].sort() : [];
+      return JSON.stringify(correctChoices) === JSON.stringify(userAnswers);
+    } else if (question.type === "FILL_MULTIPLE_BLANKS") {
+      const userBlanks = userAnswer || {};
+      return question.blanks.every((blank: any) => {
+        const userBlankAnswer = question.caseSensitive 
+          ? userBlanks[blank.blankId] 
+          : userBlanks[blank.blankId]?.toLowerCase();
+        
+        return blank.possibleAnswers.some((possible: string) => {
+          const possibleText = question.caseSensitive 
+            ? possible 
+            : possible.toLowerCase();
+          return userBlankAnswer === possibleText;
+        });
       });
     }
     return false;
@@ -158,14 +194,12 @@ export default function QuizPreview() {
     );
   }
 
-  // SAFETY CHECK: Make sure we have questions and valid index
   if (!quiz.questions || quiz.questions.length === 0) {
     return <div className="p-4">No questions available</div>;
   }
 
   const currentQuestion = quiz.questions[currentQuestionIndex];
   
-  // ADDITIONAL SAFETY CHECK
   if (!currentQuestion) {
     return <div className="p-4">Loading question...</div>;
   }
@@ -173,7 +207,6 @@ export default function QuizPreview() {
   return (
     <div id="wd-quiz-preview" style={{ minHeight: '100vh', backgroundColor: '#f8f9fa' }}>
       <div style={{ display: 'flex' }}>
-        {/* Main Content */}
         <div 
           style={{ 
             flex: 1, 
@@ -182,7 +215,6 @@ export default function QuizPreview() {
           }}
         >
           <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '1rem' }}>
-            {/* Compact Header */}
             <div 
               style={{ 
                 backgroundColor: 'white', 
@@ -208,7 +240,7 @@ export default function QuizPreview() {
                   fontSize: '0.8rem'
                 }}
               >
-                <span style={{ color: '#dc2626', marginRight: '0.5rem' }}>ⓘ</span>
+                <span style={{ color: '#dc2626', marginRight: '0.5rem' }}>ℹ</span>
                 <span style={{ color: '#dc2626' }}>
                   This is a preview of the published version of the quiz
                 </span>
@@ -219,7 +251,6 @@ export default function QuizPreview() {
               </div>
             </div>
 
-            {/* Current Question - Compact */}
             <div 
               style={{ 
                 backgroundColor: 'white', 
@@ -257,7 +288,6 @@ export default function QuizPreview() {
                   />
                 </div>
 
-                {/* Answer Options - Compact */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                   {currentQuestion.type === "MULTIPLE_CHOICE" && (
                     <>
@@ -347,11 +377,83 @@ export default function QuizPreview() {
                       }}
                     />
                   )}
+
+                  {currentQuestion.type === "MULTIPLE_CHOICE_MULTIPLE_ANSWERS" && (
+                    <>
+                      {currentQuestion.choices.map((choice: any, choiceIndex: number) => (
+                        <label 
+                          key={choiceIndex}
+                          style={{ 
+                            display: 'flex', 
+                            alignItems: 'center',
+                            padding: '0.6rem',
+                            border: '1px solid #d1d5db',
+                            borderRadius: '0.25rem',
+                            cursor: 'pointer',
+                            transition: 'background-color 0.2s'
+                          }}
+                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'}
+                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={Array.isArray(answers[currentQuestion._id]) && answers[currentQuestion._id].includes(choice.text)}
+                            onChange={(e) => {
+                              const currentAnswers = Array.isArray(answers[currentQuestion._id]) ? [...answers[currentQuestion._id]] : [];
+                              if (e.target.checked) {
+                                handleAnswerChange(currentQuestion._id, [...currentAnswers, choice.text]);
+                              } else {
+                                handleAnswerChange(currentQuestion._id, currentAnswers.filter((a: string) => a !== choice.text));
+                              }
+                            }}
+                            style={{ width: '1rem', height: '1rem', marginRight: '0.75rem' }}
+                          />
+                          <span style={{ color: '#1f2937', fontSize: '0.9rem' }}>{choice.text}</span>
+                        </label>
+                      ))}
+                    </>
+                  )}
+
+                  {currentQuestion.type === "FILL_MULTIPLE_BLANKS" && (
+                    <div>
+                      <div className="mb-3 p-3 bg-light border rounded">
+                        <div dangerouslySetInnerHTML={{ 
+                          __html: currentQuestion.question.replace(/\[blank(\d+)\]/g, '<strong>[Blank $1]</strong>')
+                        }} />
+                      </div>
+                      
+                      {currentQuestion.blanks?.map((blank: any, index: number) => (
+                        <div key={blank.blankId} className="mb-3">
+                          <label style={{ fontWeight: '600', marginBottom: '0.5rem', display: 'block' }}>
+                            Blank {index + 1} ({blank.blankId}):
+                          </label>
+                          <input
+                            type="text"
+                            value={answers[currentQuestion._id]?.[blank.blankId] || ""}
+                            onChange={(e) => {
+                              const currentBlanks = answers[currentQuestion._id] || {};
+                              handleAnswerChange(currentQuestion._id, {
+                                ...currentBlanks,
+                                [blank.blankId]: e.target.value
+                              });
+                            }}
+                            placeholder={`Enter answer for blank ${index + 1}`}
+                            style={{
+                              width: '100%',
+                              padding: '0.5rem 1rem',
+                              border: '1px solid #d1d5db',
+                              borderRadius: '0.25rem',
+                              fontSize: '0.95rem'
+                            }}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
 
-            {/* Navigation Buttons */}
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
               <Button
                 variant="outline-secondary"
@@ -377,7 +479,6 @@ export default function QuizPreview() {
               )}
             </div>
 
-            {/* Footer */}
             <div 
               style={{ 
                 backgroundColor: 'white', 
@@ -405,7 +506,6 @@ export default function QuizPreview() {
           </div>
         </div>
 
-        {/* Sidebar - Questions List */}
         {showSidebar && (
           <div 
             style={{ 
@@ -491,7 +591,6 @@ export default function QuizPreview() {
           </div>
         )}
 
-        {/* Toggle Sidebar Button (Mobile) */}
         {!showSidebar && (
           <button
             onClick={() => setShowSidebar(true)}
@@ -510,7 +609,7 @@ export default function QuizPreview() {
               display: typeof window !== 'undefined' && window.innerWidth < 768 ? 'block' : 'none'
             }}
           >
-            ←
+            ↑
           </button>
         )}
       </div>

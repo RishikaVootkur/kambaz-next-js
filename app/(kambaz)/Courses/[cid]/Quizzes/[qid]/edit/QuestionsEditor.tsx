@@ -1,5 +1,5 @@
-"use client";
 /* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 import { useState, useEffect } from "react";
 import { Button, Form } from "react-bootstrap";
 import { BsPencil, BsTrash } from "react-icons/bs";
@@ -292,11 +292,33 @@ function QuestionEditor({
                   updatedQuestion.correctAnswer = true;
                   delete updatedQuestion.choices;
                   delete updatedQuestion.possibleAnswers;
+                  delete updatedQuestion.blanks;
                 } else if (newType === "FILL_BLANK" && !question.possibleAnswers) {
                   updatedQuestion.possibleAnswers = [""];
                   updatedQuestion.caseSensitive = false;
                   delete updatedQuestion.choices;
                   delete updatedQuestion.correctAnswer;
+                  delete updatedQuestion.blanks;
+                } else if (newType === "MULTIPLE_CHOICE_MULTIPLE_ANSWERS" && !question.choices) {
+                  updatedQuestion.choices = [
+                    { text: "", isCorrect: true },
+                    { text: "", isCorrect: true },
+                    { text: "", isCorrect: false },
+                    { text: "", isCorrect: false },
+                  ];
+                  updatedQuestion.partialCredit = false;
+                  delete updatedQuestion.possibleAnswers;
+                  delete updatedQuestion.blanks;
+                } else if (newType === "FILL_MULTIPLE_BLANKS" && !question.blanks) {
+                  updatedQuestion.blanks = [
+                    { blankId: "blank1", possibleAnswers: [""] },
+                    { blankId: "blank2", possibleAnswers: [""] }
+                  ];
+                  updatedQuestion.caseSensitive = false;
+                  updatedQuestion.partialCredit = false;
+                  delete updatedQuestion.choices;
+                  delete updatedQuestion.correctAnswer;
+                  delete updatedQuestion.possibleAnswers;
                 }
                 
                 setQuestion(updatedQuestion);
@@ -305,6 +327,8 @@ function QuestionEditor({
               <option value="MULTIPLE_CHOICE">Multiple Choice</option>
               <option value="TRUE_FALSE">True/False</option>
               <option value="FILL_BLANK">Fill in the Blank</option>
+              <option value="MULTIPLE_CHOICE_MULTIPLE_ANSWERS">Multiple Choice (Multiple Answers)</option>
+              <option value="FILL_MULTIPLE_BLANKS">Fill in Multiple Blanks</option>
             </Form.Select>
           </div>
           <div className="col-md-3">
@@ -327,13 +351,13 @@ function QuestionEditor({
           {question.type === "MULTIPLE_CHOICE" && "Enter your question and multiple answers, then select the one correct answer."}
           {question.type === "TRUE_FALSE" && "Enter your question text, then select if True or False is the correct answer."}
           {question.type === "FILL_BLANK" && "Enter your question text, then define all possible correct answers for the blank. Students will see the question followed by a small text box to type their answer."}
+          {question.type === "MULTIPLE_CHOICE_MULTIPLE_ANSWERS" && "Enter your question and multiple answers, then select all correct answers. Students must select all correct answers to receive full credit."}
+          {question.type === "FILL_MULTIPLE_BLANKS" && "Enter your question with placeholders like [blank1], [blank2], then define possible answers for each blank."}
         </p>
 
-        {/* REMOVED FORMATTING TOOLBAR - Simple textarea now */}
         <Form.Group className="mb-4">
           <Form.Label style={{ fontWeight: '600', marginBottom: '0.5rem' }}>Question:</Form.Label>
           
-          {/* Simple Question Text Area - No Formatting */}
           <Form.Control
             as="textarea"
             rows={4}
@@ -487,6 +511,195 @@ function QuestionEditor({
                 >
                   + Add Another Answer
                 </Button>
+              </div>
+            </div>
+          )}
+
+          {question.type === "MULTIPLE_CHOICE_MULTIPLE_ANSWERS" && (
+            <div>
+              <div className="mb-3">
+                <Form.Check
+                  type="checkbox"
+                  label="Allow Partial Credit"
+                  checked={question.partialCredit || false}
+                  onChange={(e) => setQuestion({ ...question, partialCredit: e.target.checked })}
+                />
+                <Form.Text className="text-muted">
+                  Award points proportionally for partially correct answers (only if no incorrect choices are selected)
+                </Form.Text>
+              </div>
+              
+              {question.choices?.map((choice: any, index: number) => (
+                <div key={index} className="row mb-3 align-items-center">
+                  <div className="col-auto" style={{ minWidth: '180px' }}>
+                    <Form.Check
+                      type="checkbox"
+                      checked={choice.isCorrect || false}
+                      onChange={(e) => {
+                        const newChoices = [...question.choices];
+                        newChoices[index].isCorrect = e.target.checked;
+                        setQuestion({ ...question, choices: newChoices });
+                      }}
+                      label={choice.isCorrect ? (
+                        <span style={{ color: '#28a745', fontWeight: '600' }}>Correct Answer</span>
+                      ) : (
+                        <span style={{ color: '#666' }}>Possible Answer</span>
+                      )}
+                    />
+                  </div>
+                  <div className="col">
+                    <Form.Control
+                      type="text"
+                      value={choice.text}
+                      onChange={(e) => handleChoiceChange(index, e.target.value)}
+                      size="sm"
+                    />
+                  </div>
+                  <div className="col-auto">
+                    {question.choices.length > 2 && (
+                      <button
+                        type="button"
+                        className="btn btn-link btn-sm p-0"
+                        style={{ fontSize: '1.2rem', textDecoration: 'none', color: '#dc3545' }}
+                        onClick={() => handleRemoveChoice(index)}
+                        title="Delete"
+                      >
+                        <BsTrash />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+              <div className="text-center mt-3">
+                <Button 
+                  variant="link" 
+                  className="text-danger text-decoration-none"
+                  size="sm"
+                  onClick={handleAddChoice}
+                >
+                  + Add Another Answer
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {question.type === "FILL_MULTIPLE_BLANKS" && (
+            <div>
+              <div className="mb-3">
+                <Form.Check
+                  type="checkbox"
+                  label="Case Sensitive"
+                  checked={question.caseSensitive || false}
+                  onChange={(e) => setQuestion({ ...question, caseSensitive: e.target.checked })}
+                />
+              </div>
+              <div className="mb-3">
+                <Form.Check
+                  type="checkbox"
+                  label="Allow Partial Credit"
+                  checked={question.partialCredit || false}
+                  onChange={(e) => setQuestion({ ...question, partialCredit: e.target.checked })}
+                />
+                <Form.Text className="text-muted">
+                  Award points proportionally for each correct blank
+                </Form.Text>
+              </div>
+              
+              {question.blanks?.map((blank: any, blankIndex: number) => (
+                <div key={blankIndex} className="mb-4 p-3 border rounded bg-light">
+                  <div className="d-flex justify-content-between align-items-center mb-2">
+                    <strong>Blank {blankIndex + 1} (ID: {blank.blankId})</strong>
+                    {question.blanks.length > 1 && (
+                      <button
+                        type="button"
+                        className="btn btn-link btn-sm p-0 text-danger"
+                        onClick={() => {
+                          const newBlanks = question.blanks.filter((_: any, i: number) => i !== blankIndex);
+                          setQuestion({ ...question, blanks: newBlanks });
+                        }}
+                      >
+                        <BsTrash />
+                      </button>
+                    )}
+                  </div>
+                  
+                  {blank.possibleAnswers?.map((answer: string, answerIndex: number) => (
+                    <div key={answerIndex} className="row mb-2 align-items-center">
+                      <div className="col-auto" style={{ minWidth: '150px' }}>
+                        <span style={{ color: '#666', fontSize: '0.9rem' }}>Possible Answer:</span>
+                      </div>
+                      <div className="col">
+                        <Form.Control
+                          type="text"
+                          value={answer}
+                          onChange={(e) => {
+                            const newBlanks = [...question.blanks];
+                            newBlanks[blankIndex].possibleAnswers[answerIndex] = e.target.value;
+                            setQuestion({ ...question, blanks: newBlanks });
+                          }}
+                          size="sm"
+                        />
+                      </div>
+                      <div className="col-auto">
+                        {blank.possibleAnswers.length > 1 && (
+                          <button
+                            type="button"
+                            className="btn btn-link btn-sm p-0"
+                            style={{ fontSize: '1.2rem', textDecoration: 'none', color: '#dc3545' }}
+                            onClick={() => {
+                              const newBlanks = [...question.blanks];
+                              newBlanks[blankIndex].possibleAnswers = newBlanks[blankIndex].possibleAnswers.filter(
+                                (_: any, i: number) => i !== answerIndex
+                              );
+                              setQuestion({ ...question, blanks: newBlanks });
+                            }}
+                            title="Delete"
+                          >
+                            <BsTrash />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                  
+                  <div className="text-center mt-2">
+                    <Button 
+                      variant="link" 
+                      className="text-danger text-decoration-none"
+                      size="sm"
+                      onClick={() => {
+                        const newBlanks = [...question.blanks];
+                        newBlanks[blankIndex].possibleAnswers.push("");
+                        setQuestion({ ...question, blanks: newBlanks });
+                      }}
+                    >
+                      + Add Answer for this Blank
+                    </Button>
+                  </div>
+                </div>
+              ))}
+              
+              <div className="text-center mt-3">
+                <Button 
+                  variant="link" 
+                  className="text-danger text-decoration-none"
+                  size="sm"
+               onClick={() => {
+  const newBlankId = `blank${(question.blanks?.length || 0) + 1}`;
+  const newBlanks = [...(question.blanks || []), { blankId: newBlankId, possibleAnswers: [""] }];
+  setQuestion({ ...question, blanks: newBlanks });
+}}
+                >
+                  + Add Another Blank
+                </Button>
+              </div>
+              
+              <div className="alert alert-info mt-3">
+                <small>
+                  <strong>Usage in question:</strong> Use [blank1], [blank2], etc. in your question text to indicate where blanks should appear.
+                  <br />
+                  Example: &quot;The capital of France is [blank1] and the capital of Spain is [blank2].&quot;
+                </small>
               </div>
             </div>
           )}

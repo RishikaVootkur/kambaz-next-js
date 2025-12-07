@@ -1,5 +1,5 @@
-"use client";
 /* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Button, Form, Badge, Modal } from "react-bootstrap";
@@ -47,6 +47,7 @@ export default function QuizDetailsEditor({
       router.push(`/Courses/${cid}/Quizzes/${qid}`);
     } catch (error) {
       console.error("Error saving quiz:", error);
+      alert("Failed to save quiz. Please try again.");
     }
   };
 
@@ -59,6 +60,7 @@ export default function QuizDetailsEditor({
       router.push(`/Courses/${cid}/Quizzes`);
     } catch (error) {
       console.error("Error saving and publishing quiz:", error);
+      alert("Failed to save and publish quiz. Please try again.");
     }
   };
 
@@ -84,7 +86,6 @@ export default function QuizDetailsEditor({
   return (
     <>
       <Form>
-        {/* Title Input */}
         <Form.Group className="mb-3">
           <Form.Control
             type="text"
@@ -95,11 +96,9 @@ export default function QuizDetailsEditor({
           />
         </Form.Group>
 
-        {/* Quiz Instructions - REMOVED FORMATTING TOOLBAR */}
         <Form.Group className="mb-4">
           <Form.Label className="fw-normal">Quiz Instructions:</Form.Label>
           
-          {/* Simple text area without formatting */}
           <Form.Control
             as="textarea"
             rows={6}
@@ -110,13 +109,11 @@ export default function QuizDetailsEditor({
             style={{ fontFamily: 'Arial, sans-serif', fontSize: '14px' }}
           />
           
-          {/* Word Count */}
           <div className="d-flex justify-content-end mt-1">
             <span className="text-muted small">{wordCount} words</span>
           </div>
         </Form.Group>
 
-        {/* Points Section */}
         <Form.Group className="mb-3 row">
           <div className="col-sm-2"></div>
           <Form.Label className="col-sm-2 col-form-label text-end">Points</Form.Label>
@@ -150,7 +147,6 @@ export default function QuizDetailsEditor({
           </div>
         </Form.Group>
 
-        {/* Assignment Group */}
         <Form.Group className="mb-3 row">
           <div className="col-sm-2"></div>
           <Form.Label className="col-sm-2 col-form-label text-end">Assignment Group</Form.Label>
@@ -167,7 +163,6 @@ export default function QuizDetailsEditor({
           </div>
         </Form.Group>
 
-        {/* Options Section */}
         <div className="row mb-4">
           <div className="col-sm-2"></div>
           <div className="col-sm-2"></div>
@@ -231,7 +226,6 @@ export default function QuizDetailsEditor({
               </Form.Group>
             )}
 
-            {/* Show Correct Answers */}
             <Form.Group className="mb-3">
               <Form.Label>Show Correct Answers</Form.Label>
               <Form.Select
@@ -246,7 +240,6 @@ export default function QuizDetailsEditor({
               </Form.Select>
             </Form.Group>
 
-            {/* Access Code */}
             <Form.Group className="mb-3">
               <Form.Label>Access Code</Form.Label>
               <Form.Control
@@ -261,7 +254,6 @@ export default function QuizDetailsEditor({
               </Form.Text>
             </Form.Group>
 
-            {/* One Question at a Time */}
             <Form.Check
               type="checkbox"
               label="One Question at a Time"
@@ -270,7 +262,6 @@ export default function QuizDetailsEditor({
               className="mb-3"
             />
 
-            {/* Webcam Required */}
             <Form.Check
               type="checkbox"
               label="Webcam Required"
@@ -279,7 +270,6 @@ export default function QuizDetailsEditor({
               className="mb-3"
             />
 
-            {/* Lock Questions After Answering */}
             <Form.Check
               type="checkbox"
               label="Lock Questions After Answering"
@@ -288,7 +278,6 @@ export default function QuizDetailsEditor({
               className="mb-3"
             />
 
-            {/* View Responses */}
             <Form.Group className="mb-3">
               <Form.Label>View Responses</Form.Label>
               <Form.Select
@@ -301,7 +290,6 @@ export default function QuizDetailsEditor({
               </Form.Select>
             </Form.Group>
 
-            {/* Require Respondus LockDown Browser */}
             <Form.Check
               type="checkbox"
               label="Require Respondus LockDown Browser"
@@ -310,7 +298,6 @@ export default function QuizDetailsEditor({
               className="mb-3"
             />
 
-            {/* Required to View Quiz Results */}
             <Form.Check
               type="checkbox"
               label="Required to View Quiz Results"
@@ -321,7 +308,6 @@ export default function QuizDetailsEditor({
           </div>
         </div>
 
-        {/* Assign Section */}
         <div className="row mb-4">
           <div className="col-sm-2"></div>
           <Form.Label className="col-sm-2 col-form-label text-end align-self-start">Assign</Form.Label>
@@ -399,7 +385,6 @@ export default function QuizDetailsEditor({
 
         <hr className="my-4" />
         
-        {/* Action Buttons */}
         <div className="d-flex gap-2 justify-content-end pb-4">
           <Button 
             variant="light" 
