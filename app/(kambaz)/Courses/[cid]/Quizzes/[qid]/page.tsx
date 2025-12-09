@@ -32,7 +32,6 @@ export default function QuizDetails() {
         const quizData = await client.findQuizById(qid);
         setQuiz(quizData);
 
-        // Fetch student's latest attempt
         if (isStudent) {
           try {
             const latest = await client.getLatestAttempt(qid);
@@ -54,7 +53,6 @@ export default function QuizDetails() {
     };
     fetchQuiz();
     
-    // Re-fetch when page becomes visible (user returns from another page)
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
         console.log('🔄 Page visible - refreshing attempts');
@@ -69,24 +67,19 @@ export default function QuizDetails() {
   if (!quiz) return <div>Loading...</div>;
 
   const canTakeQuiz = () => {
-    // No attempt yet - can take
     if (!latestAttempt || !latestAttempt.submittedAt) return true;
     
-    // Single attempt only - can't retake
     if (!quiz.multipleAttempts) return false;
     
-    // Multiple attempts - check if any remaining
     return attemptCount < quiz.howManyAttempts;
   };
 
   const handleStartQuiz = () => {
-    // Check if can take quiz
     if (!canTakeQuiz()) {
       alert("You have used all your attempts for this quiz.");
       return;
     }
 
-    // Check access code
     if (quiz.accessCode && quiz.accessCode.trim() !== "") {
       setShowAccessCodeModal(true);
     } else {
@@ -185,19 +178,15 @@ export default function QuizDetails() {
         </div>
       </div>
 
-      {/* Student's Last Attempt Score */}
       {isStudent && latestAttempt && latestAttempt.submittedAt && (
         (() => {
-          // Calculate correct total points from quiz questions
           const totalPoints = quiz.questions?.reduce((sum: number, q: any) => sum + (q.points || 0), 0) || 0;
           const maxScore = totalPoints > 0 ? totalPoints : latestAttempt.maxScore;
           const percentage = maxScore > 0 ? ((latestAttempt.score / maxScore) * 100).toFixed(2) : "0.00";
           
-          // Determine if we should show the score
           const isLastAttempt = !quiz.multipleAttempts || attemptCount >= quiz.howManyAttempts;
           const showScore = isLastAttempt || quiz.showCorrectAnswers === "IMMEDIATELY";
           
-          // Only show score if it's the last attempt OR if quiz settings allow immediate viewing
           if (!showScore) {
             return (
               <Alert variant="info" className="mb-4">
@@ -228,7 +217,6 @@ export default function QuizDetails() {
 
       <div className="card">
         <div className="card-body">
-          {/* Student View */}
           {isStudent && (
             <>
               <h5 className="mb-3">Quiz Information</h5>
@@ -284,7 +272,6 @@ export default function QuizDetails() {
             </>
           )}
 
-          {/* Faculty/Admin View */}
           {(isFaculty || isAdmin) && (
             <>
               <table className="table">
@@ -371,7 +358,6 @@ export default function QuizDetails() {
         </div>
       </div>
 
-      {/* Access Code Modal */}
       <Modal show={showAccessCodeModal} onHide={() => setShowAccessCodeModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Enter Access Code</Modal.Title>

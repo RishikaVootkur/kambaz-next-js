@@ -322,7 +322,7 @@ export default function Quizzes() {
                 style={{ cursor: 'pointer', userSelect: 'none' }}
               >
                 <span className="me-2">{collapsed ? '▶' : '▼'}</span>
-                <strong>Assignment Quizzes</strong>
+                <strong>Quizzes</strong>
               </span>
             </li>
             
