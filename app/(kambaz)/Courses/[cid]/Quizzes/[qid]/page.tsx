@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
 import { Button, Modal, Form, Alert } from "react-bootstrap";
-import { FaCheckCircle } from "react-icons/fa"; // ← Import green checkmark icon
+import { FaCheckCircle } from "react-icons/fa"; 
 import * as client from "../client";
 
 export default function QuizDetails() {

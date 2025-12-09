@@ -491,14 +491,6 @@ if (submitted) {
         >
           Go to Quizzes Now
         </Button>
-        {quiz.multipleAttempts && attempt.attemptNumber < quiz.howManyAttempts && (
-          <Button 
-            variant="danger"
-            onClick={() => router.push(`/Courses/${cid}/Quizzes/${qid}/take`)}
-          >
-            Take Quiz Again
-          </Button>
-        )}
       </div>
     </div>
   );

@@ -216,15 +216,6 @@ export default function QuizResults() {
         <Button variant="primary" onClick={() => router.push(`/Courses/${cid}/Quizzes/${qid}`)}>
           Back to Quiz Details
         </Button>
-        {quiz.multipleAttempts && attempt.attemptNumber < quiz.howManyAttempts && (
-          <Button 
-            variant="danger" 
-            className="ms-2"
-            onClick={() => router.push(`/Courses/${cid}/Quizzes/${qid}/take`)}
-          >
-            Take Quiz Again
-          </Button>
-        )}
       </div>
     </div>
   );
